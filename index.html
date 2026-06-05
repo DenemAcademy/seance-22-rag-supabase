@@ -1,0 +1,2034 @@
+<!doctype html>
+<html lang="fr" id="top">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DENEM Academy · Séance 22 · Créer un RAG Supabase</title>
+<meta name="description" content="Support séance 22 : créer un RAG avec Supabase, Codex, MCP, sources restaurant, chunks, tables, tests de retrieval et méthode réutilisable.">
+<link rel="icon" href="logo-denem.jpeg">
+<style>
+:root{--ink:#111827;--muted:#475569;--line:#111827;--yellow:#facc15;--yellow-dark:#ca8a04;--yellow-soft:#fef3c7;--sky:#e0f2fe;--mint:#dcfce7;--rose:#ffe4e6;--lav:#ede9fe;--paper:#fff;--soft:#f8fafc;--shadow:7px 7px 0 #111827;--shadow-sm:4px 4px 0 #111827}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#fff;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:0;overflow-x:hidden}::selection{background:var(--yellow);color:var(--ink)}a{color:inherit}.progress{position:fixed;top:0;left:0;right:0;height:6px;background:#e5e7eb;z-index:100}.progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--yellow),#f97316,#22c55e,#06b6d4)}.topbar{position:sticky;top:6px;z-index:90;background:rgba(255,255,255,.96);border-bottom:2px solid var(--line);backdrop-filter:blur(10px)}.topbar-inner{max-width:1220px;margin:auto;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px}.brand{display:flex;gap:12px;align-items:center;text-decoration:none}.brand img{width:42px;height:42px;object-fit:cover;border:2px solid var(--line);border-radius:8px;box-shadow:var(--shadow-sm)}.brand b{display:block;font-size:18px;font-weight:950}.brand small{display:block;font:900 11px/1.2 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.14em;color:var(--muted);margin-top:3px}.navlinks{display:flex;gap:8px;flex-wrap:wrap}.navlinks a,.badge,.copy-btn,.hero-link{border:2px solid var(--line);border-radius:7px;box-shadow:var(--shadow-sm);background:#fff;padding:8px 10px;text-decoration:none;font:900 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.12em}.navlinks a:hover{background:var(--yellow);color:var(--ink)}.hero{position:relative;overflow:hidden;border-bottom:2px solid var(--line);background:linear-gradient(180deg,#fff 0%,#fffbeb 100%)}.hero:before,.support-section:nth-child(odd):before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(202,138,4,.14) 1px,transparent 1px),linear-gradient(90deg,rgba(17,24,39,.06) 1px,transparent 1px);background-size:34px 34px;pointer-events:none}.hero-wrap{position:relative;max-width:1220px;margin:auto;padding:70px 20px 56px;display:grid;grid-template-columns:1.04fr .96fr;gap:34px;align-items:center}.eyebrow{display:inline-flex;border:2px solid var(--line);border-radius:7px;background:var(--yellow);box-shadow:var(--shadow-sm);padding:10px 14px;font:900 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.16em}h1{font-size:clamp(44px,7.2vw,92px);line-height:.92;margin:24px 0 18px;letter-spacing:0;font-weight:950}h1 span{color:var(--yellow-dark)}.hero p{font-size:20px;line-height:1.72;color:var(--muted);max-width:760px}.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}.hero-link.primary{background:var(--ink);color:#fff}.hero-card{border:2px solid var(--line);border-radius:8px;background:#fff;box-shadow:var(--shadow);padding:14px}.hero-card img{width:100%;border:2px solid var(--line);border-radius:8px;aspect-ratio:16/10;object-fit:contain;background:#fff}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.stat{border:2px solid var(--line);border-radius:8px;background:#fff;box-shadow:var(--shadow-sm);padding:14px}.stat:nth-child(1){background:var(--yellow)}.stat:nth-child(2){background:var(--mint)}.stat:nth-child(3){background:var(--sky)}.stat b{display:block;font-size:30px}.stat span{font:900 11px/1.3 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.1em}.toc{max-width:1220px;margin:auto;padding:28px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.toc a{display:block;min-height:150px;text-decoration:none;border:2px solid var(--line);border-radius:8px;background:#fff;box-shadow:var(--shadow-sm);padding:16px}.toc a:nth-child(2n){background:var(--yellow-soft)}.toc a:nth-child(3n){background:var(--sky)}.toc a:nth-child(5n){background:var(--mint)}.toc span{font:900 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;color:var(--yellow-dark);letter-spacing:.14em}.toc b{display:block;margin-top:10px;font-size:22px;line-height:1.1}.toc p{color:var(--muted);font-size:14px;line-height:1.55;margin:10px 0 0}.support-section{position:relative;border-top:2px solid var(--line);scroll-margin-top:92px}.tone-1{background:#fff}.tone-2{background:#fffbeb}.tone-3{background:#f8fafc}.tone-4{background:#ecfeff}.tone-5{background:#f0fdf4}.tone-6{background:#fff1f2}.wrap{position:relative;max-width:1220px;margin:auto;padding:58px 20px;display:grid;gap:28px;align-items:start}.layout-opener .wrap{grid-template-columns:150px 1fr 360px;align-items:center}.layout-story .wrap,.layout-check .wrap,.layout-compare .wrap,.layout-diagnostic .wrap,.layout-prompt .wrap,.layout-matrix .wrap,.layout-quote .wrap{grid-template-columns:.96fr 1.04fr}.layout-cards .wrap,.layout-timeline .wrap{grid-template-columns:1fr}.section-head,.opener-note{background:#fff;border:2px solid var(--line);border-radius:8px;box-shadow:var(--shadow);padding:26px}.meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}.badge{display:inline-flex;width:max-content;box-shadow:var(--shadow-sm);padding:7px 9px}.badge.num{background:var(--yellow);color:var(--ink)}.badge.label{background:var(--ink);color:#fff}.badge.time{background:var(--yellow-soft);color:var(--ink)}.badge.soft{background:#fff;color:var(--muted)}.section-head h2{font-size:clamp(31px,4.7vw,58px);line-height:1;margin:0;letter-spacing:0;font-weight:950}.section-head p,.opener-note p,.opener-side p,.cards p,.checklist p,.timeline p,.matrix p,.diagnostic p,.before-after p{color:var(--muted);line-height:1.7}.section-head p{font-size:18px;margin:18px 0 0}.big-index{font:950 clamp(76px,11vw,150px)/.8 ui-sans-serif,system-ui,sans-serif;color:var(--yellow);text-shadow:4px 4px 0 var(--line)}.opener-note{margin-top:18px}.opener-note b,.opener-side b{font-size:24px}.opener-side{border:2px solid var(--line);border-radius:8px;box-shadow:var(--shadow);background:var(--ink);color:#fff;padding:22px}.opener-side p{color:#fef3c7}.mini-flow{display:grid;gap:10px;margin-top:16px}.mini-flow span{border:2px solid var(--line);border-radius:999px;background:#fff;color:var(--ink);box-shadow:var(--shadow-sm);padding:10px 12px;font-weight:850;font-size:13px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.cards article,.visual-card,.diagnostic div,.matrix div,.before-after div,.checklist li,.timeline li{border:2px solid var(--line);border-radius:8px;background:#fff;box-shadow:var(--shadow-sm);padding:18px}.cards article:nth-child(1),.matrix div:nth-child(2),.before-after div:nth-child(2){background:var(--yellow-soft)}.cards article:nth-child(2),.matrix div:nth-child(4){background:var(--mint)}.cards article:nth-child(3),.matrix div:nth-child(3),.before-after div:nth-child(1){background:var(--rose)}.cards b,.diagnostic b,.matrix b,.checklist b,.timeline b{display:block;margin-bottom:8px;color:var(--ink)}.checklist,.timeline{list-style:none;margin:0;padding:0;display:grid;gap:14px}.checklist li,.timeline li{display:grid;grid-template-columns:48px 1fr;gap:14px;align-items:start}.checklist span,.timeline span{display:grid;place-items:center;width:42px;height:42px;border:2px solid var(--line);border-radius:8px;background:var(--yellow);color:var(--ink);font:900 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace}.before-after{display:grid;grid-template-columns:1fr 1fr;gap:14px}.before-after span{font:900 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.12em}.diagnostic,.matrix{display:grid;gap:14px}.matrix{grid-template-columns:repeat(2,1fr)}.visual,.visual-card{border:2px solid var(--line);border-radius:8px;box-shadow:var(--shadow);background:#fff;overflow:hidden}.visual img{display:block;width:100%;aspect-ratio:16/10;object-fit:contain;background:#fff}.visual.wide{margin-top:18px}.visual.wide img{aspect-ratio:21/9}.visual figcaption{border-top:2px solid var(--line);padding:12px 14px;color:#334155;font-size:14px;font-weight:800;line-height:1.45}.visual-card{background:linear-gradient(135deg,var(--ink),#1e293b);color:#fff;min-height:320px;display:flex;flex-direction:column;justify-content:space-between}.visual-card span{font:950 90px/.85 ui-sans-serif,system-ui,sans-serif;color:var(--yellow)}.visual-card b{font:900 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.14em;color:#fef3c7}.visual-card p{color:#e5e7eb;line-height:1.7}.prompt-panel{border:2px solid var(--line);border-radius:8px;box-shadow:var(--shadow);background:#0f172a;color:#f8fafc;overflow:hidden}.prompt-head{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:2px solid rgba(255,255,255,.18);background:#111827;padding:12px 14px}.prompt-head span{font:900 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;text-transform:uppercase;letter-spacing:.14em;color:#fde68a}.copy-btn{cursor:pointer}.copy-btn.copied{background:var(--yellow);color:var(--ink)}.prompt-panel pre{margin:0;white-space:pre-wrap;overflow-wrap:anywhere;max-height:700px;overflow:auto;padding:20px;font:650 13px/1.68 ui-monospace,SFMono-Regular,Menlo,monospace}blockquote{margin:0;border:2px solid var(--line);border-radius:8px;box-shadow:var(--shadow);background:var(--ink);color:#fff;padding:30px;display:flex;flex-direction:column;justify-content:space-between}blockquote span{font:950 clamp(56px,8vw,110px)/.8 ui-sans-serif,system-ui,sans-serif;color:var(--yellow)}blockquote p{font-size:clamp(22px,3vw,34px);line-height:1.25;margin:22px 0 0;color:#fff}.sources{border-top:2px solid var(--line);background:var(--ink);color:#fff}.sources .wrap{display:block;padding:36px 20px}.sources a{color:#fef3c7}.sources p{color:#cbd5e1;line-height:1.7}.reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:none}.section-counter{position:fixed;right:14px;bottom:14px;z-index:80;border:2px solid var(--line);border-radius:7px;background:#fff;box-shadow:var(--shadow-sm);padding:8px 10px;font:900 11px/1 ui-monospace,SFMono-Regular,Menlo,monospace}
+@media(max-width:980px){.topbar-inner{align-items:flex-start;flex-direction:column}.hero-wrap,.layout-opener .wrap,.layout-story .wrap,.layout-check .wrap,.layout-compare .wrap,.layout-diagnostic .wrap,.layout-prompt .wrap,.layout-matrix .wrap,.layout-quote .wrap{grid-template-columns:1fr}.toc{grid-template-columns:repeat(2,1fr)}.cards,.stats{grid-template-columns:1fr}.big-index{font-size:84px}.before-after,.matrix{grid-template-columns:1fr}.visual-card{min-height:auto}}
+@media(max-width:620px){.navlinks{display:none}.hero-wrap,.wrap{padding-left:14px;padding-right:14px}.hero-wrap{padding-top:46px}.toc{grid-template-columns:1fr;padding-left:14px;padding-right:14px}h1{font-size:clamp(40px,13vw,58px);line-height:1.02}.hero p,.section-head p{font-size:16px}.section-head,.opener-note{padding:22px}.cards article,.visual-card,.diagnostic div,.matrix div,.before-after div,.checklist li,.timeline li{padding:15px}.checklist li,.timeline li{grid-template-columns:1fr}.prompt-panel pre{font-size:12px;padding:15px}.section-counter{display:none}.visual.wide img,.visual img{aspect-ratio:4/3}}
+</style>
+</head>
+<body>
+<div class="progress"><span id="progress"></span></div>
+<div class="section-counter" id="counter">01 / 80</div>
+<nav class="topbar"><div class="topbar-inner"><a class="brand" href="#top"><img src="logo-denem.jpeg" alt="DENEM Academy"><span><b>DENEM Academy</b><small>Séance 22 · RAG Supabase</small></span></a><div class="navlinks"><a href="#section-01">RAG</a><a href="#section-11">Supabase</a><a href="#section-21">MCP</a><a href="#section-31">Sources</a><a href="#section-51">Tables</a><a href="#section-71">Méthode</a></div></div></nav>
+<header class="hero"><div class="hero-wrap"><div><span class="eyebrow">Séance 22 · mémoire client</span><h1>Créer un RAG Supabase <span>sans se perdre dans la technique.</span></h1><p>Je pars d'une demande client très concrète : un restaurant veut un futur chatbot capable de répondre avec ses propres documents. Je crée le projet Supabase, je branche le MCP, je fais lire les sources à Codex, je construis les chunks, puis je vérifie que la mémoire est prête.</p><div class="hero-actions"><a class="hero-link primary" href="#section-01">Commencer</a><a class="hero-link" href="transcription/seance-22-creer-un-rag-transcription.md">Transcription</a><a class="hero-link" href="transcription/seance-22-creer-un-rag-moments-importants.md">Moments importants</a></div></div><aside class="hero-card"><img src="img/session-22/24-capture-codex-prompt-rag.png" alt="Prompt Codex pour créer un RAG"><div class="stats"><div class="stat"><b>80</b><span>sections</span></div><div class="stat"><b>533</b><span>chunks créés</span></div><div class="stat"><b>20</b><span>sources</span></div></div></aside></div></header>
+<section class="toc" aria-label="Sommaire"><a href="#section-01"><span>Acte 01 · sections 01-10</span><b>Pourquoi je crée un RAG</b><p>Je pars du besoin client : un chatbot doit répondre avec les vrais documents.</p></a>
+<a href="#section-11"><span>Acte 02 · sections 11-20</span><b>Créer la base du projet</b><p>Je prépare le projet RAG CLIENT et je repère les zones que Codex va remplir.</p></a>
+<a href="#section-21"><span>Acte 03 · sections 21-30</span><b>Brancher Supabase à Codex</b><p>Je donne à l&#x27;agent les bons outils, puis je vérifie qu&#x27;il voit le bon projet.</p></a>
+<a href="#section-31"><span>Acte 04 · sections 31-40</span><b>Transformer les documents client</b><p>Je prépare le dossier restaurant et je demande à Codex de comprendre les sources.</p></a>
+<a href="#section-41"><span>Acte 05 · sections 41-50</span><b>Construire les chunks</b><p>Je transforme les fichiers en inventaire, documents, chunks, métadonnées et preuves.</p></a>
+<a href="#section-51"><span>Acte 06 · sections 51-60</span><b>Pousser le schéma Supabase</b><p>Je fais créer les tables, les relations, les vues et les tests dans Supabase.</p></a>
+<a href="#section-61"><span>Acte 07 · sections 61-70</span><b>Tester la mémoire</b><p>Je vérifie que le futur chatbot récupère les bons morceaux avant de répondre.</p></a>
+<a href="#section-71"><span>Acte 08 · sections 71-80</span><b>Réutiliser sur un vrai client</b><p>Je garde une méthode simple pour reproduire ce système dans un autre secteur.</p></a></section>
+<main>
+    <section id="section-01" class="support-section tone-2 layout-opener">
+      <div class="wrap reveal">
+        <div class="big-index">01</div>
+        <div>
+          <div class="section-head">
+            
+    <div class="meta">
+      <span class="badge num">01</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:00</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    
+            <h2>Pourquoi je crée un RAG</h2>
+            <p>Je pars du besoin client : un chatbot doit répondre avec les vrais documents.</p>
+          </div>
+          <div class="opener-note"><b>Un RAG sert à donner de la mémoire</b><p>Je pars d&#x27;un besoin simple : un chatbot sans mémoire répond trop large. Avec un RAG, je lui donne les documents du client comme contexte.</p></div>
+        </div>
+        <aside class="opener-side">
+          <b>Comprendre</b>
+          <p>Explique le RAG en une phrase avant d&#x27;ouvrir l&#x27;outil.</p>
+          <div class="mini-flow"><span>Tu sais dire : je récupère les bons morceaux de documents avant de répondre.</span><span>Ne commence pas par la base de données si le besoin client n&#x27;est pas clair.</span></div>
+        </aside>
+      </div>
+    </section>
+    
+
+        <section id="section-02" class="support-section tone-3 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">02</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:00</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    <h2>Les chunks sont les morceaux utiles</h2><p>Un chunk est une petite partie de texte que le modèle peut récupérer. Le but n&#x27;est pas de stocker un gros PDF brut, mais de rendre chaque morceau réutilisable.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Imagine une FAQ découpée en réponses courtes.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu comprends pourquoi 20 documents peuvent produire 533 chunks.</p></article>
+      <article><b>Point de vigilance</b><p>Des chunks trop longs rendent la réponse floue.</p></article>
+    </div>
+    
+            
+          </div>
+        </section>
+        
+
+        <section id="section-03" class="support-section tone-4 layout-check">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">03</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:00</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    <h2>Supabase devient le support technique</h2><p>Supabase me donne une base Postgres, des tables, des relations, des vues et une API. C&#x27;est le socle qui stocke le corpus du RAG.</p></div>
+            <ul class="checklist">
+              <li><span>01</span><p><b>Action</b>Ouvre Supabase avec l&#x27;idée de créer une base client.</p></li>
+              <li><span>02</span><p><b>Validation</b>Tu sais où retrouver Table Editor, SQL Editor et Database.</p></li>
+              <li><span>03</span><p><b>Attention</b>Supabase n&#x27;est pas juste un tableau : c&#x27;est une vraie base.</p></li>
+            </ul>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-04" class="support-section tone-5 layout-compare">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">04</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:00</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    <h2>MCP change le niveau de compétence</h2><p>Je n&#x27;ai pas besoin de tout coder à la main si l&#x27;outil est connecté en MCP. Codex peut lire le contexte, appeler Supabase et construire le schéma.</p></div>
+            <div class="before-after">
+              <div><span>Avant</span><p>Sans MCP, je perds du temps à piloter chaque action manuellement.</p></div>
+              <div><span>Après</span><p>Tu peux expliquer pourquoi je branche Supabase avant de demander le build.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-05" class="support-section tone-6 layout-timeline">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">05</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:01</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    <h2>Codex devient l&#x27;agent technique</h2><p>Je garde le raisonnement métier. Codex prend la partie technique : schéma SQL, tables, relations, vues et tests.</p></div>
+            <ol class="timeline">
+              <li><span>1</span><p><b>Préparer</b>Je garde le raisonnement métier. Codex prend la partie technique : schéma SQL, tables, relations, vues et tests.</p></li>
+              <li><span>2</span><p><b>Faire</b>Donne à Codex un résultat attendu, pas juste une commande vague.</p></li>
+              <li><span>3</span><p><b>Contrôler</b>Codex sait expliquer ce qu&#x27;il crée et où il l&#x27;a créé.</p></li>
+            </ol>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-06" class="support-section tone-1 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">06</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:04</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    <h2>La demande client reste le point de départ</h2><p>Le client veut un chatbot qui connaît son entreprise. Je traduis ça en système de mémoire : documents, corpus, chunks, retrieval.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Ne vends pas un RAG si une FAQ simple suffit.</p></div>
+              <div><b>Premier réflexe</b><p>Formule la demande client en une seule phrase.</p></div>
+              <div><b>Décision</b><p>Tu peux dire à quoi sert le RAG avant de dire comment il marche.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-07" class="support-section tone-2 layout-quote">
+          <div class="wrap reveal">
+            <blockquote><span>07</span><p>Tu peux lister les documents avant de lancer Codex.</p></blockquote>
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">07</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:04</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    <h2>Les documents deviennent la matière première</h2><p>Le client fournit des PDF, DOCX, XLSX ou Markdown. Mon travail est de les rendre lisibles par le système.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Rassemble les fichiers dans un dossier unique.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu peux lister les documents avant de lancer Codex.</p></article>
+      <article><b>Point de vigilance</b><p>Des documents éparpillés créent un corpus incomplet.</p></article>
+    </div>
+    
+            </div>
+          </div>
+        </section>
+        
+
+    <section id="section-08" class="support-section tone-3 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">08</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:04</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    <h2>Le restaurant donne un cas concret</h2><p>Je travaille sur un restaurant parce que le besoin est parlant : menus, réservations, allergies, horaires, VIP, groupes et procédures.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>Je travaille sur un restaurant parce que le besoin est parlant : menus, réservations, allergies, horaires, VIP, groupes et procédures.</p></div>
+          <div><b>À faire</b><p>Repère les questions que le chatbot devra traiter.</p></div>
+          <div><b>À éviter</b><p>Un cas trop abstrait donne une base difficile à vérifier.</p></div>
+          <div><b>Résultat</b><p>Tu vois déjà les familles de connaissances.</p></div>
+        </div>
+        
+    <figure class="visual wide">
+      <img src="img/session-22/25-capture-maison-denem-site.png" alt="Le cas restaurant sert de terrain concret pour le RAG." loading="eager">
+      <figcaption>Le cas restaurant sert de terrain concret pour le RAG.</figcaption>
+    </figure>
+    
+      </div>
+    </section>
+    
+
+        <section id="section-09" class="support-section tone-4 layout-story">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">09</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:05</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    <h2>Le résultat attendu n&#x27;est pas un chatbot complet</h2><p>Dans cette séance, je crée la mémoire. Le chatbot viendra ensuite interroger cette mémoire.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Sépare bien corpus RAG et interface chatbot.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu sais ce qui est livré à la fin : tables, chunks, tests, schéma.</p></article>
+      <article><b>Point de vigilance</b><p>Ne mélange pas création du corpus et design de conversation.</p></article>
+    </div>
+    
+            </div>
+            <aside class="visual-card"><span>09</span><b>Comprendre</b><p>Tu sais ce qui est livré à la fin : tables, chunks, tests, schéma.</p></aside>
+          </div>
+        </section>
+        
+
+        <section id="section-10" class="support-section tone-5 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">10</span>
+      <span class="badge label">Comprendre</span>
+      <span class="badge">Acte 1</span>
+      <span class="badge time">00:05</span>
+      <span class="badge soft">Comprendre</span>
+    </div>
+    <h2>La boucle de la séance</h2><p>Je suis une boucle simple : comprendre, créer le projet Supabase, connecter MCP, faire lire les sources, construire les chunks, tester.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Garde cette boucle visible pendant tout l&#x27;exercice.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Chaque étape produit une preuve.</p></article>
+      <article><b>Point de vigilance</b><p>Si tu sautes une preuve, tu ne sais pas où ça bloque.</p></article>
+    </div>
+    
+            
+          </div>
+        </section>
+        
+
+    <section id="section-11" class="support-section tone-3 layout-opener">
+      <div class="wrap reveal">
+        <div class="big-index">11</div>
+        <div>
+          <div class="section-head">
+            
+    <div class="meta">
+      <span class="badge num">11</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:01</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    
+            <h2>Créer la base du projet</h2>
+            <p>Je prépare le projet RAG CLIENT et je repère les zones que Codex va remplir.</p>
+          </div>
+          <div class="opener-note"><b>Je pars d&#x27;un compte Supabase</b><p>Je peux utiliser un compte existant ou créer un compte. Le plan gratuit suffit pour apprendre et pour un premier prototype.</p></div>
+        </div>
+        <aside class="opener-side">
+          <b>Supabase</b>
+          <p>Connecte-toi à Supabase avant d&#x27;ouvrir Codex.</p>
+          <div class="mini-flow"><span>Tu arrives sur l&#x27;espace des organisations.</span><span>Ne crée pas de projet dans le mauvais compte.</span></div>
+        </aside>
+      </div>
+    </section>
+    
+
+        <section id="section-12" class="support-section tone-1 layout-compare">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">12</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:01</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    <h2>L&#x27;organisation contient les projets</h2><p>Dans Supabase, je sélectionne l&#x27;organisation avant de créer le projet. C&#x27;est l&#x27;espace qui regroupe les bases.</p></div>
+            <div class="before-after">
+              <div><span>Avant</span><p>Un mauvais espace peut compliquer la facturation et les accès.</p></div>
+              <div><span>Après</span><p>Tu vois le bouton New project.</p></div>
+            </div>
+            
+    <figure class="visual wide">
+      <img src="img/session-22/03-organisations-supabase.jpg" alt="Organisation Supabase et projet RAG CLIENT." loading="eager">
+      <figcaption>Organisation Supabase et projet RAG CLIENT.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-13" class="support-section tone-2 layout-timeline">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">13</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:02</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    <h2>Je crée le projet RAG CLIENT</h2><p>Le nom du projet doit être clair. Ici je choisis RAG CLIENT pour savoir tout de suite à quoi sert la base.</p></div>
+            <ol class="timeline">
+              <li><span>1</span><p><b>Préparer</b>Le nom du projet doit être clair. Ici je choisis RAG CLIENT pour savoir tout de suite à quoi sert la base.</p></li>
+              <li><span>2</span><p><b>Faire</b>Clique New project et donne un nom lisible.</p></li>
+              <li><span>3</span><p><b>Contrôler</b>Le projet apparaît dans la liste Supabase.</p></li>
+            </ol>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-14" class="support-section tone-3 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">14</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:02</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    <h2>Le mot de passe doit être solide</h2><p>Supabase demande un mot de passe de base. Je ne le mets pas dans le support et je ne le rends pas public.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Ne colle jamais le mot de passe dans un prompt public.</p></div>
+              <div><b>Premier réflexe</b><p>Utilise un gestionnaire ou un mot de passe généré.</p></div>
+              <div><b>Décision</b><p>Supabase accepte le mot de passe.</p></div>
+            </div>
+            
+    <figure class="visual wide">
+      <img src="img/session-22/05-creation-projet-rag-client.jpg" alt="Création du projet RAG CLIENT dans Supabase." loading="eager">
+      <figcaption>Création du projet RAG CLIENT dans Supabase.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-15" class="support-section tone-4 layout-quote">
+          <div class="wrap reveal">
+            <blockquote><span>15</span><p>Le projet démarre avec une région cohérente.</p></blockquote>
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">15</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:02</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    <h2>La région se choisit selon les utilisateurs</h2><p>Je garde une région proche des utilisateurs. Pour un projet européen, Europe est logique.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Choisis la région avant de créer la base.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Le projet démarre avec une région cohérente.</p></article>
+      <article><b>Point de vigilance</b><p>Changer de région après coup peut devenir lourd.</p></article>
+    </div>
+    
+            </div>
+          </div>
+        </section>
+        
+
+    <section id="section-16" class="support-section tone-5 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">16</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:02</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    <h2>Les options de sécurité comptent dès le départ</h2><p>Je regarde les options Data API, exposition des tables et RLS. Même en formation, je garde les bons réflexes.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>Je regarde les options Data API, exposition des tables et RLS. Même en formation, je garde les bons réflexes.</p></div>
+          <div><b>À faire</b><p>Active ce qui sert, désactive ce que tu ne comprends pas encore.</p></div>
+          <div><b>À éviter</b><p>Exposer toutes les tables sans RLS est un vrai risque.</p></div>
+          <div><b>Résultat</b><p>Tu sais quelles tables seront exposées ou non.</p></div>
+        </div>
+        
+    <figure class="visual wide">
+      <img src="img/session-22/06-parametres-region-securite.jpg" alt="Paramètres de région et de sécurité avant création." loading="eager">
+      <figcaption>Paramètres de région et de sécurité avant création.</figcaption>
+    </figure>
+    
+      </div>
+    </section>
+    
+
+        <section id="section-17" class="support-section tone-6 layout-story">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">17</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:02</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    <h2>Je lis la barre latérale Supabase</h2><p>Table Editor, SQL Editor, Database, Authentication : chaque zone a un rôle. Je ne clique pas au hasard.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Associe chaque menu à une fonction.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu sais où Codex va créer et où toi tu vas vérifier.</p></article>
+      <article><b>Point de vigilance</b><p>Si tu ne sais pas où regarder, tu ne peux pas contrôler Codex.</p></article>
+    </div>
+    
+            </div>
+            <aside class="visual-card"><span>17</span><b>Supabase</b><p>Tu sais où Codex va créer et où toi tu vas vérifier.</p></aside>
+          </div>
+        </section>
+        
+
+        <section id="section-18" class="support-section tone-1 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">18</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:02</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    <h2>Table Editor et SQL Editor ne font pas la même chose</h2><p>SQL Editor exécute le schéma. Table Editor permet de voir les données. Database permet de regarder la structure.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Utilise le bon outil selon la question.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu peux voir une table et aussi le SQL qui l&#x27;a créée.</p></article>
+      <article><b>Point de vigilance</b><p>Modifier à la main sans comprendre peut casser la relation.</p></article>
+    </div>
+    
+            
+    <figure class="visual wide">
+      <img src="img/session-22/08-schema-vide-supabase.jpg" alt="La base est vide avant le travail de Codex." loading="eager">
+      <figcaption>La base est vide avant le travail de Codex.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-19" class="support-section tone-2 layout-check">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">19</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:03</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    <h2>Authentication sert plus tard</h2><p>Je montre Authentication parce que le projet client peut avoir des users. Ici, ce n&#x27;est pas encore le coeur du RAG.</p></div>
+            <ul class="checklist">
+              <li><span>01</span><p><b>Action</b>Observe l&#x27;onglet Users sans créer de compte inutile.</p></li>
+              <li><span>02</span><p><b>Validation</b>Il n&#x27;y a pas d&#x27;utilisateur au départ.</p></li>
+              <li><span>03</span><p><b>Attention</b>Ne crée pas des users juste pour remplir l&#x27;écran.</p></li>
+            </ul>
+            
+    <figure class="visual wide">
+      <img src="img/session-22/23-capture-authentication-users.png" alt="Vue Authentication / Users : aucun utilisateur au départ." loading="eager">
+      <figcaption>Vue Authentication / Users : aucun utilisateur au départ.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-20" class="support-section tone-3 layout-compare">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">20</span>
+      <span class="badge label">Supabase</span>
+      <span class="badge">Acte 2</span>
+      <span class="badge time">00:03</span>
+      <span class="badge soft">Supabase</span>
+    </div>
+    <h2>Le projet est prêt quand il est vide et accessible</h2><p>Avant de brancher Codex, je veux une base prête, vide et identifiable. C&#x27;est plus simple à contrôler.</p></div>
+            <div class="before-after">
+              <div><span>Avant</span><p>Si plusieurs projets se ressemblent, l&#x27;agent peut viser le mauvais.</p></div>
+              <div><span>Après</span><p>Codex retrouvera RAG CLIENT.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+    <section id="section-21" class="support-section tone-4 layout-opener">
+      <div class="wrap reveal">
+        <div class="big-index">21</div>
+        <div>
+          <div class="section-head">
+            
+    <div class="meta">
+      <span class="badge num">21</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:03</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    
+            <h2>Brancher Supabase à Codex</h2>
+            <p>Je donne à l&#x27;agent les bons outils, puis je vérifie qu&#x27;il voit le bon projet.</p>
+          </div>
+          <div class="opener-note"><b>Le bouton Connect ouvre la suite</b><p>Dans le projet Supabase, Connect me permet de brancher des clients, dont un agent via MCP.</p></div>
+        </div>
+        <aside class="opener-side">
+          <b>MCP</b>
+          <p>Clique Connect depuis le projet RAG CLIENT.</p>
+          <div class="mini-flow"><span>La fenêtre de connexion s&#x27;ouvre.</span><span>Ne confonds pas connexion app, ORM et MCP.</span></div>
+        </aside>
+      </div>
+    </section>
+    
+
+        <section id="section-22" class="support-section tone-5 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">22</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:03</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    <h2>Je choisis la partie MCP</h2><p>Le but est de connecter un agent, pas seulement de copier une chaîne de connexion.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Une connection string brute ne suffit pas pour ce workflow.</p></div>
+              <div><b>Premier réflexe</b><p>Ouvre l&#x27;onglet MCP / Connect your agent.</p></div>
+              <div><b>Décision</b><p>Tu vois les options client, read-only et feature groups.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-23" class="support-section tone-6 layout-quote">
+          <div class="wrap reveal">
+            <blockquote><span>23</span><p>Le bouton Add to ChatGPT ou la configuration MCP est disponible.</p></blockquote>
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">23</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:03</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    <h2>Le client agent peut être ChatGPT ou Codex</h2><p>L&#x27;écran propose ChatGPT, mais l&#x27;intention est de donner les outils Supabase à l&#x27;environnement qui va travailler.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Sélectionne le client adapté à ton usage.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Le bouton Add to ChatGPT ou la configuration MCP est disponible.</p></article>
+      <article><b>Point de vigilance</b><p>Ne bloque pas sur le nom du client si le principe est le même.</p></article>
+    </div>
+    
+            </div>
+          </div>
+        </section>
+        
+
+    <section id="section-24" class="support-section tone-1 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">24</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:04</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    <h2>Read-only dépend de la tâche</h2><p>Pour auditer, read-only est rassurant. Pour créer les tables, il faut autoriser l&#x27;écriture avec prudence.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>Pour auditer, read-only est rassurant. Pour créer les tables, il faut autoriser l&#x27;écriture avec prudence.</p></div>
+          <div><b>À faire</b><p>Décide si l&#x27;agent doit lire ou modifier.</p></div>
+          <div><b>À éviter</b><p>Laisser l&#x27;écriture ouverte sans contrôle est dangereux.</p></div>
+          <div><b>Résultat</b><p>Tu sais pourquoi tu changes le niveau d&#x27;accès.</p></div>
+        </div>
+        
+      </div>
+    </section>
+    
+
+        <section id="section-25" class="support-section tone-2 layout-story">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">25</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:04</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    <h2>Les groupes de fonctionnalités limitent le bruit</h2><p>Supabase propose des groupes : Database, Debugging, Development, Functions. Je sélectionne ce qui sert au RAG.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Privilégie Database pour ce travail.</p></article>
+      <article><b>Preuve que c'est bon</b><p>L&#x27;agent reçoit les outils nécessaires sans tout mélanger.</p></article>
+      <article><b>Point de vigilance</b><p>Trop d&#x27;outils peut rendre l&#x27;agent moins précis.</p></article>
+    </div>
+    
+            </div>
+            
+    <figure class="visual">
+      <img src="img/session-22/12-feature-groups-database.jpg" alt="Choix des groupes de fonctionnalités côté MCP." loading="eager">
+      <figcaption>Choix des groupes de fonctionnalités côté MCP.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-26" class="support-section tone-3 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">26</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:04</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    <h2>L&#x27;installation du plugin sert à rendre Supabase visible</h2><p>Le plugin ou connecteur donne à l&#x27;agent les commandes nécessaires. Sans ça, Codex peut comprendre mais pas agir.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Installe ou active Supabase côté agent.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Le module Supabase apparaît comme installé.</p></article>
+      <article><b>Point de vigilance</b><p>Installer ne suffit pas : il faut aussi autoriser.</p></article>
+    </div>
+    
+            
+          </div>
+        </section>
+        
+
+        <section id="section-27" class="support-section tone-4 layout-check">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">27</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:10</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    <h2>L&#x27;autorisation confirme l&#x27;accès</h2><p>Quand Codex essaie de se connecter, j&#x27;autorise l&#x27;accès au projet. Je vérifie que l&#x27;organisation est la bonne.</p></div>
+            <ul class="checklist">
+              <li><span>01</span><p><b>Action</b>Valide l&#x27;autorisation uniquement si le projet est correct.</p></li>
+              <li><span>02</span><p><b>Validation</b>Codex peut appeler Supabase.</p></li>
+              <li><span>03</span><p><b>Attention</b>Autoriser le mauvais projet crée des tables au mauvais endroit.</p></li>
+            </ul>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-28" class="support-section tone-5 layout-compare">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">28</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:12</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    <h2>Je redémarre si l&#x27;agent le demande</h2><p>Après connexion, Codex peut demander de fermer et rouvrir la session pour charger les outils MCP.</p></div>
+            <div class="before-after">
+              <div><span>Avant</span><p>Continuer sans redémarrer peut donner de faux blocages.</p></div>
+              <div><span>Après</span><p>Les outils Supabase sont disponibles après redémarrage.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-29" class="support-section tone-6 layout-timeline">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">29</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:14</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    <h2>Je vérifie que RAG CLIENT est repéré</h2><p>Codex doit voir le bon projet avant d&#x27;écrire. Je ne veux pas qu&#x27;il invente un contexte.</p></div>
+            <ol class="timeline">
+              <li><span>1</span><p><b>Préparer</b>Codex doit voir le bon projet avant d&#x27;écrire. Je ne veux pas qu&#x27;il invente un contexte.</p></li>
+              <li><span>2</span><p><b>Faire</b>Demande-lui quel projet Supabase il voit.</p></li>
+              <li><span>3</span><p><b>Contrôler</b>Il cite RAG CLIENT et le bon identifiant de projet.</p></li>
+            </ol>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-30" class="support-section tone-1 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">30</span>
+      <span class="badge label">MCP</span>
+      <span class="badge">Acte 3</span>
+      <span class="badge time">00:13</span>
+      <span class="badge soft">MCP</span>
+    </div>
+    <h2>Si ça bloque, je reviens à la connexion</h2><p>Les problèmes MCP viennent souvent d&#x27;une session pas relancée, d&#x27;une autorisation manquante ou d&#x27;un mauvais projet.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Ne relance pas dix prompts sans régler l&#x27;accès.</p></div>
+              <div><b>Premier réflexe</b><p>Reprends Connect, autorisation, redémarrage.</p></div>
+              <div><b>Décision</b><p>Le prochain appel MCP fonctionne.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+    <section id="section-31" class="support-section tone-5 layout-opener">
+      <div class="wrap reveal">
+        <div class="big-index">31</div>
+        <div>
+          <div class="section-head">
+            
+    <div class="meta">
+      <span class="badge num">31</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:04</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    
+            <h2>Transformer les documents client</h2>
+            <p>Je prépare le dossier restaurant et je demande à Codex de comprendre les sources.</p>
+          </div>
+          <div class="opener-note"><b>Le dossier sources est la base du travail</b><p>J&#x27;ai préparé un dossier de documents restaurant. C&#x27;est ce dossier que Codex doit comprendre.</p></div>
+        </div>
+        <aside class="opener-side">
+          <b>Sources</b>
+          <p>Place toutes les sources au même endroit.</p>
+          <div class="mini-flow"><span>Tu peux montrer le dossier avant de lancer l&#x27;analyse.</span><span>Un fichier oublié ne sera pas dans le RAG.</span></div>
+        </aside>
+      </div>
+    </section>
+    
+
+    <section id="section-32" class="support-section tone-3 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">32</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:04</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    <h2>Les sources couvrent plusieurs usages</h2><p>Présentation, menus, politiques, horaires, FAQ, scripts, allergènes, demandes clients : chaque fichier couvre une partie du futur chatbot.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>Présentation, menus, politiques, horaires, FAQ, scripts, allergènes, demandes clients : chaque fichier couvre une partie du futur chatbot.</p></div>
+          <div><b>À faire</b><p>Classe mentalement les fichiers par thème.</p></div>
+          <div><b>À éviter</b><p>Des sources sans thème donnent des chunks difficiles à filtrer.</p></div>
+          <div><b>Résultat</b><p>Tu vois déjà les réponses possibles.</p></div>
+        </div>
+        
+      </div>
+    </section>
+    
+
+        <section id="section-33" class="support-section tone-4 layout-story">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">33</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:05</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    <h2>Je ne transforme pas tout trop vite</h2><p>Avant d&#x27;écrire dans Supabase, je veux que Codex lise et comprenne. La compréhension vient avant le SQL.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Demande une synthèse des sources.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Codex couvre les 20 sources.</p></article>
+      <article><b>Point de vigilance</b><p>Créer les tables trop tôt force des corrections lourdes.</p></article>
+    </div>
+    
+            </div>
+            <aside class="visual-card"><span>33</span><b>Sources</b><p>Codex couvre les 20 sources.</p></aside>
+          </div>
+        </section>
+        
+
+        <section id="section-34" class="support-section tone-5 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">34</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:05</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    <h2>J&#x27;ouvre le terminal dans le bon dossier</h2><p>Codex travaille là où je le lance. Je veux qu&#x27;il lise le dossier restaurant, pas le bureau complet.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Ouvre le terminal dans le dossier client.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Le chemin affiché correspond au projet restaurant.</p></article>
+      <article><b>Point de vigilance</b><p>Lancer Codex au mauvais endroit pollue le contexte.</p></article>
+    </div>
+    
+            
+    <figure class="visual wide">
+      <img src="img/session-22/24-capture-codex-prompt-rag.png" alt="Prompt initial dans Codex depuis le dossier client." loading="eager">
+      <figcaption>Prompt initial dans Codex depuis le dossier client.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-35" class="support-section tone-6 layout-check">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">35</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:06</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    <h2>Le mode danger doit être assumé</h2><p>La commande bypass approvals donne beaucoup de liberté. Je l&#x27;utilise pour avancer vite, mais je vérifie le résultat.</p></div>
+            <ul class="checklist">
+              <li><span>01</span><p><b>Action</b>N&#x27;utilise ce mode que dans un dossier maîtrisé.</p></li>
+              <li><span>02</span><p><b>Validation</b>Codex peut lire, écrire et appeler les outils nécessaires.</p></li>
+              <li><span>03</span><p><b>Attention</b>Ce mode n&#x27;est pas anodin.</p></li>
+            </ul>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-36" class="support-section tone-1 layout-prompt">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+                
+    <div class="meta">
+      <span class="badge num">36</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:06</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    
+                <h2>Je donne le premier prompt de compréhension</h2>
+                <p>Je demande à Codex de comprendre les documents et de se mettre en tête qu&#x27;on va créer un RAG simple.</p>
+              </div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Colle le prompt de découverte.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Codex commence par analyser, pas par écrire.</p></article>
+      <article><b>Point de vigilance</b><p>Un prompt trop court peut créer directement un schéma bancal.</p></article>
+    </div>
+    
+              
+            </div>
+            
+    <div class="prompt-panel">
+      <div class="prompt-head">
+        <span>Prompt de découverte des documents</span>
+        <button class="copy-btn" type="button">Copier</button>
+      </div>
+      <pre><code>Comprends tous les documents présents dans ce dossier.
+Ensuite, mets-toi en tête que nous allons créer un RAG très simple.
+
+Contexte :
+- Le client est un restaurant.
+- Le futur chatbot devra répondre grâce aux documents fournis.
+- Je veux comprendre les sources avant de créer les tables.
+
+Ce que j&#x27;attends :
+1. Liste les documents trouvés.
+2. Explique à quoi chaque document va servir dans le RAG.
+3. Propose les grandes catégories de connaissances.
+4. Ne crée encore rien dans Supabase.</code></pre>
+    </div>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-37" class="support-section tone-2 layout-timeline">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">37</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:08</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    <h2>Codex fait une synthèse métier</h2><p>Il couvre les sources, résume le contexte et prépare l&#x27;angle RAG. C&#x27;est une étape de cadrage.</p></div>
+            <ol class="timeline">
+              <li><span>1</span><p><b>Préparer</b>Il couvre les sources, résume le contexte et prépare l&#x27;angle RAG. C&#x27;est une étape de cadrage.</p></li>
+              <li><span>2</span><p><b>Faire</b>Lis sa synthèse avant de continuer.</p></li>
+              <li><span>3</span><p><b>Contrôler</b>Tu peux expliquer le corpus en français simple.</p></li>
+            </ol>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-38" class="support-section tone-3 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">38</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:14</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    <h2>Les PDF, DOCX et XLSX doivent devenir du texte</h2><p>Un RAG ne récupère pas une image de PDF : il lui faut du contenu exploitable, nettoyé et traçable.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Un tableau mal extrait produit des réponses incohérentes.</p></div>
+              <div><b>Premier réflexe</b><p>Demande une extraction propre par type de fichier.</p></div>
+              <div><b>Décision</b><p>Le texte source est lisible avant insertion.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-39" class="support-section tone-4 layout-quote">
+          <div class="wrap reveal">
+            <blockquote><span>39</span><p>Tu peux filtrer client, staff, manager.</p></blockquote>
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">39</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:14</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    <h2>Les métadonnées rendent le corpus pilotable</h2><p>Je veux savoir d&#x27;où vient chaque chunk, à quelle audience il s&#x27;adresse et quel risque il porte.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Ajoute source, audience, catégorie, priorité.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu peux filtrer client, staff, manager.</p></article>
+      <article><b>Point de vigilance</b><p>Sans métadonnées, tout se ressemble.</p></article>
+    </div>
+    
+            </div>
+          </div>
+        </section>
+        
+
+    <section id="section-40" class="support-section tone-5 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">40</span>
+      <span class="badge label">Sources</span>
+      <span class="badge">Acte 4</span>
+      <span class="badge time">00:08</span>
+      <span class="badge soft">Sources</span>
+    </div>
+    <h2>La première validation est une synthèse</h2><p>Avant le build, Codex doit me dire ce qu&#x27;il a compris : sources, thème, angle RAG et prochaines tables.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>Avant le build, Codex doit me dire ce qu&#x27;il a compris : sources, thème, angle RAG et prochaines tables.</p></div>
+          <div><b>À faire</b><p>Valide la synthèse ou corrige-la.</p></div>
+          <div><b>À éviter</b><p>Ne laisse pas Codex décider seul du métier.</p></div>
+          <div><b>Résultat</b><p>Le projet technique part d&#x27;une intention claire.</p></div>
+        </div>
+        
+      </div>
+    </section>
+    
+
+    <section id="section-41" class="support-section tone-6 layout-opener">
+      <div class="wrap reveal">
+        <div class="big-index">41</div>
+        <div>
+          <div class="section-head">
+            
+    <div class="meta">
+      <span class="badge num">41</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:13</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    
+            <h2>Construire les chunks</h2>
+            <p>Je transforme les fichiers en inventaire, documents, chunks, métadonnées et preuves.</p>
+          </div>
+          <div class="opener-note"><b>Je lance le cadrage du schéma RAG</b><p>Après la lecture, je demande le schéma logique : projets, documents, chunks, tests, règles et vues.</p></div>
+        </div>
+        <aside class="opener-side">
+          <b>Corpus</b>
+          <p>Demande le schéma avant l&#x27;exécution SQL.</p>
+          <div class="mini-flow"><span>Codex explique les tables.</span><span>Un schéma non expliqué sera difficile à maintenir.</span></div>
+        </aside>
+      </div>
+    </section>
+    
+
+        <section id="section-42" class="support-section tone-1 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">42</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:19</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    <h2>Le projet racine garde l&#x27;identité du corpus</h2><p>Une table projet permet de rattacher tous les documents au même client ou à la même base.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Prévois une table rag_projects.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Chaque document a un project_id.</p></article>
+      <article><b>Point de vigilance</b><p>Sans projet racine, impossible de gérer plusieurs clients.</p></article>
+    </div>
+    
+            
+          </div>
+        </section>
+        
+
+        <section id="section-43" class="support-section tone-2 layout-check">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">43</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:19</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    <h2>Les documents gardent l&#x27;inventaire</h2><p>La table documents contient les fichiers sources, leurs types, leurs hashes et leurs statuts.</p></div>
+            <ul class="checklist">
+              <li><span>01</span><p><b>Action</b>Crée une ligne par fichier source.</p></li>
+              <li><span>02</span><p><b>Validation</b>Tu sais combien de documents sont réellement ingérés.</p></li>
+              <li><span>03</span><p><b>Attention</b>Un corpus sans inventaire est impossible à auditer.</p></li>
+            </ul>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-44" class="support-section tone-3 layout-compare">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">44</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:21</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    <h2>Les chunks portent la mémoire consultable</h2><p>La table chunks contient les morceaux de texte que le chatbot ira récupérer.</p></div>
+            <div class="before-after">
+              <div><span>Avant</span><p>Un chunk sans source n&#x27;est pas défendable.</p></div>
+              <div><span>Après</span><p>Le chatbot peut récupérer un morceau précis.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-45" class="support-section tone-4 layout-timeline">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">45</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:21</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    <h2>533 chunks prouvent que le corpus existe</h2><p>Dans la séance, Codex crée 533 chunks à partir des sources. Ce nombre sert de preuve de volumétrie.</p></div>
+            <ol class="timeline">
+              <li><span>1</span><p><b>Préparer</b>Dans la séance, Codex crée 533 chunks à partir des sources. Ce nombre sert de preuve de volumétrie.</p></li>
+              <li><span>2</span><p><b>Faire</b>Compare documents et chunks.</p></li>
+              <li><span>3</span><p><b>Contrôler</b>Tu peux dire combien de mémoire le système possède.</p></li>
+            </ol>
+            
+    <figure class="visual wide">
+      <img src="img/session-22/17-codex-analyse-sources.jpg" alt="Codex analyse les sources et prépare la structure." loading="eager">
+      <figcaption>Codex analyse les sources et prépare la structure.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-46" class="support-section tone-5 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">46</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:22</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    <h2>Les embeddings rendent la recherche possible</h2><p>Pour une recherche sémantique, les chunks doivent être associés à une représentation vectorielle ou au moins à une stratégie de retrieval.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Changer de modèle sans trace complique les migrations.</p></div>
+              <div><b>Premier réflexe</b><p>Prévois les dimensions et le modèle d&#x27;embedding.</p></div>
+              <div><b>Décision</b><p>La table indique le modèle et la dimension.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-47" class="support-section tone-6 layout-quote">
+          <div class="wrap reveal">
+            <blockquote><span>47</span><p>Tu peux justifier une réponse.</p></blockquote>
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">47</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:22</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    <h2>La source doit rester traçable</h2><p>Quand le futur chatbot répond, je dois pouvoir revenir au document d&#x27;origine.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Garde source_file, page ou feuille si disponible.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu peux justifier une réponse.</p></article>
+      <article><b>Point de vigilance</b><p>Un RAG sans provenance crée de la confiance artificielle.</p></article>
+    </div>
+    
+            </div>
+          </div>
+        </section>
+        
+
+    <section id="section-48" class="support-section tone-1 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">48</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:22</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    <h2>Le corpus peut grandir</h2><p>20 documents donnent 533 chunks. Avec 100 documents, je peux avoir 2000, 3000 ou plus. La méthode doit tenir.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>20 documents donnent 533 chunks. Avec 100 documents, je peux avoir 2000, 3000 ou plus. La méthode doit tenir.</p></div>
+          <div><b>À faire</b><p>Pense la structure pour plusieurs clients et gros volumes.</p></div>
+          <div><b>À éviter</b><p>Un prototype trop rigide casse au premier vrai client.</p></div>
+          <div><b>Résultat</b><p>Le schéma ne dépend pas d&#x27;un seul dossier.</p></div>
+        </div>
+        
+      </div>
+    </section>
+    
+
+        <section id="section-49" class="support-section tone-2 layout-story">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">49</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:25</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    <h2>Je demande à pousser le schéma</h2><p>Quand le cadrage est bon, je demande à Codex de pousser le SQL et les tables dans Supabase.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Lance le prompt d&#x27;exécution.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Les tables apparaissent dans Supabase.</p></article>
+      <article><b>Point de vigilance</b><p>Ne pousse pas si la synthèse est encore floue.</p></article>
+    </div>
+    
+            </div>
+            <aside class="visual-card"><span>49</span><b>Corpus</b><p>Les tables apparaissent dans Supabase.</p></aside>
+          </div>
+        </section>
+        
+
+        <section id="section-50" class="support-section tone-3 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">50</span>
+      <span class="badge label">Corpus</span>
+      <span class="badge">Acte 5</span>
+      <span class="badge time">00:26</span>
+      <span class="badge soft">Corpus</span>
+    </div>
+    <h2>SQL Editor applique les changements</h2><p>Codex peut exécuter les requêtes SQL via Supabase. Je vérifie que les migrations ou requêtes passent.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Regarde si le SQL a bien run.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Aucune erreur SQL bloquante.</p></article>
+      <article><b>Point de vigilance</b><p>Une erreur silencieuse laisse une base incomplète.</p></article>
+    </div>
+    
+            
+          </div>
+        </section>
+        
+
+    <section id="section-51" class="support-section tone-1 layout-opener">
+      <div class="wrap reveal">
+        <div class="big-index">51</div>
+        <div>
+          <div class="section-head">
+            
+    <div class="meta">
+      <span class="badge num">51</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:29</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    
+            <h2>Pousser le schéma Supabase</h2>
+            <p>Je fais créer les tables, les relations, les vues et les tests dans Supabase.</p>
+          </div>
+          <div class="opener-note"><b>Table Editor montre les données</b><p>Une fois les tables créées, je peux voir les lignes : projets, documents, chunks, tests.</p></div>
+        </div>
+        <aside class="opener-side">
+          <b>Tables</b>
+          <p>Ouvre Table Editor.</p>
+          <div class="mini-flow"><span>Les tables RAG sont visibles.</span><span>Voir une table vide n&#x27;est pas une réussite.</span></div>
+        </aside>
+      </div>
+    </section>
+    
+
+        <section id="section-52" class="support-section tone-5 layout-compare">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">52</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:29</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    <h2>Je regarde un chunk client</h2><p>Un chunk doit contenir du contenu utile, pas seulement un ID. Je vérifie la ligne complète.</p></div>
+            <div class="before-after">
+              <div><span>Avant</span><p>Un chunk illisible donnera une mauvaise réponse.</p></div>
+              <div><span>Après</span><p>Tu vois content, source, catégorie et statut.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-53" class="support-section tone-6 layout-timeline">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">53</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:35</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    <h2>Schema Visualizer donne la preuve visuelle</h2><p>Le schéma montre les relations entre projets, documents, chunks, tests et snapshots.</p></div>
+            <ol class="timeline">
+              <li><span>1</span><p><b>Préparer</b>Le schéma montre les relations entre projets, documents, chunks, tests et snapshots.</p></li>
+              <li><span>2</span><p><b>Faire</b>Ouvre Schema Visualizer.</p></li>
+              <li><span>3</span><p><b>Contrôler</b>Les relations ne flottent pas au hasard.</p></li>
+            </ol>
+            
+    <figure class="visual wide">
+      <img src="img/session-22/20-database-tables-rag.jpg" alt="Tables Supabase remplies après exécution." loading="eager">
+      <figcaption>Tables Supabase remplies après exécution.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-54" class="support-section tone-1 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">54</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:30</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    <h2>Les vues simplifient la lecture</h2><p>Une vue peut exposer seulement ce qui est utile au client ou au chatbot, sans montrer les colonnes internes.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Une vue mal configurée peut contourner la sécurité.</p></div>
+              <div><b>Premier réflexe</b><p>Prévois des vues customer-safe.</p></div>
+              <div><b>Décision</b><p>Le chatbot peut lire une vue propre.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-55" class="support-section tone-2 layout-quote">
+          <div class="wrap reveal">
+            <blockquote><span>55</span><p>Les audiences sont visibles dans les métadonnées.</p></blockquote>
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">55</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:30</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    <h2>La sécurité reste présente même en formation</h2><p>Si une table est exposée par l&#x27;API, je pense RLS, rôles et vues. Le RAG ne doit pas exposer des documents internes au mauvais public.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Sépare public, staff et manager.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Les audiences sont visibles dans les métadonnées.</p></article>
+      <article><b>Point de vigilance</b><p>Un chatbot ne doit pas répondre avec une procédure interne.</p></article>
+    </div>
+    
+            </div>
+          </div>
+        </section>
+        
+
+    <section id="section-56" class="support-section tone-3 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">56</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:35</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    <h2>Les règles de gouvernance cadrent les réponses</h2><p>Je peux stocker des règles : ce qui est autorisé, sensible, réservé au staff ou à escalader.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>Je peux stocker des règles : ce qui est autorisé, sensible, réservé au staff ou à escalader.</p></div>
+          <div><b>À faire</b><p>Crée une table de règles si le client a des contraintes.</p></div>
+          <div><b>À éviter</b><p>Sans règles, le chatbot peut trop promettre.</p></div>
+          <div><b>Résultat</b><p>Les réponses futures auront des garde-fous.</p></div>
+        </div>
+        
+      </div>
+    </section>
+    
+
+        <section id="section-57" class="support-section tone-4 layout-story">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">57</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:35</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    <h2>Les snapshots mesurent la qualité</h2><p>Un snapshot garde une photo de la qualité du corpus : sources, chunks, tests, statuts.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Ajoute un point de mesure.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu peux comparer avant/après correction.</p></article>
+      <article><b>Point de vigilance</b><p>Impossible d&#x27;améliorer ce qu&#x27;on ne mesure pas.</p></article>
+    </div>
+    
+            </div>
+            <aside class="visual-card"><span>57</span><b>Tables</b><p>Tu peux comparer avant/après correction.</p></aside>
+          </div>
+        </section>
+        
+
+        <section id="section-58" class="support-section tone-5 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">58</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:35</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    <h2>Les tests de sources valident la couverture</h2><p>Les tests permettent de vérifier que chaque question retrouve les documents attendus.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Crée une table de tests de retrieval.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Chaque test pointe vers des sources.</p></article>
+      <article><b>Point de vigilance</b><p>Un RAG sans test peut sembler bon alors qu&#x27;il répond au hasard.</p></article>
+    </div>
+    
+            
+          </div>
+        </section>
+        
+
+        <section id="section-59" class="support-section tone-6 layout-check">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">59</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:35</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    <h2>Je regarde les relations avant de livrer</h2><p>Les tables seules ne suffisent pas. Je veux voir les liens : project_id, document_id, chunk_id, test_id.</p></div>
+            <ul class="checklist">
+              <li><span>01</span><p><b>Action</b>Contrôle les clés et relations.</p></li>
+              <li><span>02</span><p><b>Validation</b>Le schéma est lisible.</p></li>
+              <li><span>03</span><p><b>Attention</b>Une relation cassée coupe la mémoire.</p></li>
+            </ul>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-60" class="support-section tone-1 layout-compare">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">60</span>
+      <span class="badge label">Tables</span>
+      <span class="badge">Acte 6</span>
+      <span class="badge time">00:21</span>
+      <span class="badge soft">Tables</span>
+    </div>
+    <h2>Un test part d&#x27;une vraie question</h2><p>Je teste comme un utilisateur : allergies, réservations, groupes, horaires, VIP.</p></div>
+            <div class="before-after">
+              <div><span>Avant</span><p>Des tests trop faciles ne prouvent rien.</p></div>
+              <div><span>Après</span><p>Le RAG retrouve les bons chunks.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+    <section id="section-61" class="support-section tone-2 layout-opener">
+      <div class="wrap reveal">
+        <div class="big-index">61</div>
+        <div>
+          <div class="section-head">
+            
+    <div class="meta">
+      <span class="badge num">61</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:21</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    
+            <h2>Tester la mémoire</h2>
+            <p>Je vérifie que le futur chatbot récupère les bons morceaux avant de répondre.</p>
+          </div>
+          <div class="opener-note"><b>Le chatbot récupère plusieurs chunks</b><p>Une réponse fiable peut combiner plusieurs morceaux : politique, FAQ, procédure et script.</p></div>
+        </div>
+        <aside class="opener-side">
+          <b>Retrieval</b>
+          <p>Demande les chunks retrouvés, pas seulement la réponse.</p>
+          <div class="mini-flow"><span>Tu vois les sources utilisées.</span><span>Une seule source peut être insuffisante.</span></div>
+        </aside>
+      </div>
+    </section>
+    
+
+        <section id="section-62" class="support-section tone-3 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">62</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:22</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    <h2>Le cas réservation est prioritaire</h2><p>Un restaurant reçoit beaucoup de demandes de réservation. Le RAG doit retrouver les règles rapidement.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Une mauvaise réponse ici crée un vrai problème client.</p></div>
+              <div><b>Premier réflexe</b><p>Teste une demande de groupe ou de changement.</p></div>
+              <div><b>Décision</b><p>Les chunks réservation ressortent.</p></div>
+            </div>
+            
+    <figure class="visual wide">
+      <img src="img/session-22/21-table-editor-tests.jpg" alt="Tests de retrieval consultables dans Table Editor." loading="eager">
+      <figcaption>Tests de retrieval consultables dans Table Editor.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-63" class="support-section tone-4 layout-quote">
+          <div class="wrap reveal">
+            <blockquote><span>63</span><p>Le RAG retrouve les documents allergènes et règles.</p></blockquote>
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">63</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:22</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    <h2>Les allergies demandent de la prudence</h2><p>Les allergies sont sensibles. Le chatbot doit retrouver la politique et parfois escalader au staff.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Teste une allergie sévère.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Le RAG retrouve les documents allergènes et règles.</p></article>
+      <article><b>Point de vigilance</b><p>Ne laisse pas l&#x27;IA improviser sur un sujet sensible.</p></article>
+    </div>
+    
+            </div>
+          </div>
+        </section>
+        
+
+    <section id="section-64" class="support-section tone-5 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">64</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:22</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    <h2>Les demandes VIP et groupes ont leurs règles</h2><p>Un client VIP ou un groupe privé implique souvent une procédure différente.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>Un client VIP ou un groupe privé implique souvent une procédure différente.</p></div>
+          <div><b>À faire</b><p>Teste un événement privé.</p></div>
+          <div><b>À éviter</b><p>Répondre comme une réservation simple peut être faux.</p></div>
+          <div><b>Résultat</b><p>Les chunks groupe, salon privé ou conciergerie ressortent.</p></div>
+        </div>
+        
+      </div>
+    </section>
+    
+
+        <section id="section-65" class="support-section tone-6 layout-story">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">65</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:29</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    <h2>Je vérifie le contenu exact de la ligne</h2><p>Quand je clique sur une ligne, je regarde le résumé, le content, la source et l&#x27;audience.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Ouvre plusieurs chunks différents.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Les contenus ne sont pas vides ni dupliqués.</p></article>
+      <article><b>Point de vigilance</b><p>Des doublons réduisent la précision.</p></article>
+    </div>
+    
+            </div>
+            <aside class="visual-card"><span>65</span><b>Retrieval</b><p>Les contenus ne sont pas vides ni dupliqués.</p></aside>
+          </div>
+        </section>
+        
+
+        <section id="section-66" class="support-section tone-1 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">66</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:29</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    <h2>Le score de retrieval doit être lisible</h2><p>Si les tests stockent un statut ou un score, je peux repérer les requêtes faibles.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Classe les tests par statut.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Les échecs sont visibles.</p></article>
+      <article><b>Point de vigilance</b><p>Sans statut, tout a l&#x27;air réussi.</p></article>
+    </div>
+    
+            
+          </div>
+        </section>
+        
+
+        <section id="section-67" class="support-section tone-2 layout-check">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">67</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:30</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    <h2>Les logs et audits aident à corriger</h2><p>Je peux garder une trace des requêtes, latences ou erreurs pour améliorer le système.</p></div>
+            <ul class="checklist">
+              <li><span>01</span><p><b>Action</b>Prévois une table audit si le projet devient sérieux.</p></li>
+              <li><span>02</span><p><b>Validation</b>Tu peux diagnostiquer un mauvais retrieval.</p></li>
+              <li><span>03</span><p><b>Attention</b>Un système sans logs devient opaque.</p></li>
+            </ul>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-68" class="support-section tone-3 layout-compare">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">68</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:35</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    <h2>J&#x27;ajuste le découpage si nécessaire</h2><p>Si un chunk ne sort jamais ou sort au mauvais moment, je change le découpage ou les métadonnées.</p></div>
+            <div class="before-after">
+              <div><span>Avant</span><p>Un mauvais corpus ne se sauve pas avec un prompt magique.</p></div>
+              <div><span>Après</span><p>Les tests passent mieux après correction.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-69" class="support-section tone-4 layout-timeline">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">69</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:37</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    <h2>Je montre le schéma au client simplement</h2><p>Même si le client n&#x27;est pas technique, lui montrer la logique donne confiance : sources, morceaux, tests, mémoire.</p></div>
+            <ol class="timeline">
+              <li><span>1</span><p><b>Préparer</b>Même si le client n&#x27;est pas technique, lui montrer la logique donne confiance : sources, morceaux, tests, mémoire.</p></li>
+              <li><span>2</span><p><b>Faire</b>Explique le schéma avec des mots simples.</p></li>
+              <li><span>3</span><p><b>Contrôler</b>Le client comprend où va son contenu.</p></li>
+            </ol>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-70" class="support-section tone-5 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">70</span>
+      <span class="badge label">Retrieval</span>
+      <span class="badge">Acte 7</span>
+      <span class="badge time">00:37</span>
+      <span class="badge soft">Retrieval</span>
+    </div>
+    <h2>La preuve finale est plus forte qu&#x27;un discours</h2><p>Je peux dire : voici les sources, voici les chunks, voici les tests, voici le schéma.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Sans preuve, le RAG reste invisible.</p></div>
+              <div><b>Premier réflexe</b><p>Prépare une capture ou un mini compte rendu.</p></div>
+              <div><b>Décision</b><p>La livraison devient concrète.</p></div>
+            </div>
+            
+    <figure class="visual wide">
+      <img src="img/session-22/22-validation-finale-rag.jpg" alt="Validation finale du corpus RAG dans Supabase." loading="eager">
+      <figcaption>Validation finale du corpus RAG dans Supabase.</figcaption>
+    </figure>
+    
+          </div>
+        </section>
+        
+
+    <section id="section-71" class="support-section tone-3 layout-opener">
+      <div class="wrap reveal">
+        <div class="big-index">71</div>
+        <div>
+          <div class="section-head">
+            
+    <div class="meta">
+      <span class="badge num">71</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:16</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    
+            <h2>Réutiliser sur un vrai client</h2>
+            <p>Je garde une méthode simple pour reproduire ce système dans un autre secteur.</p>
+          </div>
+          <div class="opener-note"><b>Je découpe la demande avant l&#x27;outil</b><p>Je commence toujours par la demande : le client veut-il mémoire, automatisation, création, analyse ou interface ?</p></div>
+        </div>
+        <aside class="opener-side">
+          <b>Méthode</b>
+          <p>Écris le besoin en langage client.</p>
+          <div class="mini-flow"><span>Tu choisis l&#x27;outil après la demande.</span><span>Partir de l&#x27;outil donne une solution forcée.</span></div>
+        </aside>
+      </div>
+    </section>
+    
+
+    <section id="section-72" class="support-section tone-1 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">72</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:16</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    <h2>Je cherche si l&#x27;outil se connecte en MCP</h2><p>Si l&#x27;outil a un MCP, je peux souvent déléguer la partie technique à Codex.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>Si l&#x27;outil a un MCP, je peux souvent déléguer la partie technique à Codex.</p></div>
+          <div><b>À faire</b><p>Vérifie la disponibilité du connecteur.</p></div>
+          <div><b>À éviter</b><p>Sans connecteur, il faudra peut-être une API ou du manuel.</p></div>
+          <div><b>Résultat</b><p>Tu sais si l&#x27;agent peut agir directement.</p></div>
+        </div>
+        
+      </div>
+    </section>
+    
+
+        <section id="section-73" class="support-section tone-2 layout-story">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">73</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:17</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    <h2>Le syndrome de l&#x27;imposteur se règle par méthode</h2><p>Je n&#x27;ai pas besoin de tout savoir à l&#x27;avance. Je dois savoir cadrer, connecter, vérifier et corriger.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Reviens à la boucle demande, outil, connecteur, preuve.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu peux avancer même sur un outil nouveau.</p></article>
+      <article><b>Point de vigilance</b><p>Bidouiller sans méthode crée plus de doute.</p></article>
+    </div>
+    
+            </div>
+            <aside class="visual-card"><span>73</span><b>Méthode</b><p>Tu peux avancer même sur un outil nouveau.</p></aside>
+          </div>
+        </section>
+        
+
+        <section id="section-74" class="support-section tone-3 layout-cards">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">74</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:18</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    <h2>La même logique marche dans d&#x27;autres secteurs</h2><p>Restaurant aujourd&#x27;hui, immobilier demain, formation ensuite. Le RAG change de sources, pas de logique.</p></div>
+            
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Remplace les documents et les tests métier.</p></article>
+      <article><b>Preuve que c'est bon</b><p>La structure reste réutilisable.</p></article>
+      <article><b>Point de vigilance</b><p>Ne recopie pas les règles restaurant dans un autre métier.</p></article>
+    </div>
+    
+            
+          </div>
+        </section>
+        
+
+        <section id="section-75" class="support-section tone-4 layout-check">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">75</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:37</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    <h2>Le livrable n&#x27;est pas seulement technique</h2><p>Je livre un système de mémoire : corpus, structure, tests, explication et suite possible.</p></div>
+            <ul class="checklist">
+              <li><span>01</span><p><b>Action</b>Prépare un résumé client.</p></li>
+              <li><span>02</span><p><b>Validation</b>Le client comprend ce qui a été construit.</p></li>
+              <li><span>03</span><p><b>Attention</b>Livrer seulement des tables ne raconte pas la valeur.</p></li>
+            </ul>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-76" class="support-section tone-5 layout-prompt">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+                
+    <div class="meta">
+      <span class="badge num">76</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:38</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    
+                <h2>Je fais un contrôle avant de continuer</h2>
+                <p>Avant de brancher le chatbot, je vérifie la base. Sinon, l&#x27;interface masquera les problèmes du corpus.</p>
+              </div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Utilise le prompt de contrôle.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu connais les corrections prioritaires.</p></article>
+      <article><b>Point de vigilance</b><p>Une belle interface sur un mauvais RAG reste mauvaise.</p></article>
+    </div>
+    
+              
+            </div>
+            
+    <div class="prompt-panel">
+      <div class="prompt-head">
+        <span>Prompt de contrôle avant livraison</span>
+        <button class="copy-btn" type="button">Copier</button>
+      </div>
+      <pre><code>Fais un contrôle final de mon RAG Supabase.
+
+Vérifie :
+- nombre de documents ;
+- nombre de chunks ;
+- sources sans contenu ;
+- chunks trop longs ou trop courts ;
+- tests de retrieval en échec ;
+- vues exposées côté client ;
+- risques de sécurité ou de données sensibles.
+
+Rends-moi :
+1. un diagnostic court ;
+2. les corrections prioritaires ;
+3. une checklist de livraison client.</code></pre>
+    </div>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-77" class="support-section tone-6 layout-prompt">
+          <div class="wrap reveal">
+            <div>
+              <div class="section-head">
+                
+    <div class="meta">
+      <span class="badge num">77</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:38</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    
+                <h2>Je garde un prompt de reproduction</h2>
+                <p>La compétence devient scalable quand je peux répéter la méthode avec variables client, secteur, objectif et documents.</p>
+              </div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Garde un prompt modèle.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu peux repartir vite sur un nouveau dossier.</p></article>
+      <article><b>Point de vigilance</b><p>Réécrire tout à chaque client fait perdre du temps.</p></article>
+    </div>
+    
+              
+            </div>
+            
+    <div class="prompt-panel">
+      <div class="prompt-head">
+        <span>Prompt réutilisable pour un nouveau client</span>
+        <button class="copy-btn" type="button">Copier</button>
+      </div>
+      <pre><code>Je veux reproduire ce système RAG pour un nouveau client.
+
+Client : [NOM_CLIENT]
+Secteur : [SECTEUR]
+Objectif du chatbot : [OBJECTIF]
+Documents fournis : [LISTE_DOCUMENTS]
+Audience principale : [CLIENTS / EQUIPE / MANAGERS]
+Contraintes sensibles : [RGPD / PRIX / SANTE / VIP / AUTRE]
+
+Construis-moi :
+- le plan de corpus ;
+- les tables Supabase ;
+- les métadonnées ;
+- les tests de retrieval ;
+- les points de sécurité ;
+- la checklist de livraison.</code></pre>
+    </div>
+    
+          </div>
+        </section>
+        
+
+        <section id="section-78" class="support-section tone-1 layout-diagnostic">
+          <div class="wrap reveal">
+            <div class="section-head">
+    <div class="meta">
+      <span class="badge num">78</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:38</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    <h2>La prochaine étape utilise ces chunks</h2><p>Le chatbot ou l&#x27;agent IA viendra chercher dans ces tables pour répondre. Cette séance prépare la mémoire.</p></div>
+            <div class="diagnostic">
+              <div><b>Signal</b><p>Sans mémoire validée, le chatbot répondra trop générique.</p></div>
+              <div><b>Premier réflexe</b><p>Ne supprime pas les tables après le test.</p></div>
+              <div><b>Décision</b><p>Le futur chatbot a une base à interroger.</p></div>
+            </div>
+            
+          </div>
+        </section>
+        
+
+        <section id="section-79" class="support-section tone-2 layout-quote">
+          <div class="wrap reveal">
+            <blockquote><span>79</span><p>Tu sais refaire sur un autre cas.</p></blockquote>
+            <div>
+              <div class="section-head">
+    <div class="meta">
+      <span class="badge num">79</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:41</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    <h2>Ce que je veux que tu retiennes</h2><p>Un RAG n&#x27;est pas magique : c&#x27;est une organisation de sources, chunks, métadonnées et tests.</p></div>
+              
+    <div class="cards">
+      <article><b>Ce que je fais</b><p>Retenir la méthode plutôt que les clics exacts.</p></article>
+      <article><b>Preuve que c'est bon</b><p>Tu sais refaire sur un autre cas.</p></article>
+      <article><b>Point de vigilance</b><p>Les interfaces changent, la logique reste.</p></article>
+    </div>
+    
+            </div>
+          </div>
+        </section>
+        
+
+    <section id="section-80" class="support-section tone-3 layout-matrix">
+      <div class="wrap reveal">
+        <div class="section-head">
+    <div class="meta">
+      <span class="badge num">80</span>
+      <span class="badge label">Méthode</span>
+      <span class="badge">Acte 8</span>
+      <span class="badge time">00:42</span>
+      <span class="badge soft">Méthode</span>
+    </div>
+    <h2>La routine finale</h2><p>Je comprends la demande, je crée le projet, je connecte MCP, je fais lire les sources, je pousse le schéma, je teste et je prépare la suite.</p></div>
+        <div class="matrix">
+          <div><b>Pourquoi</b><p>Je comprends la demande, je crée le projet, je connecte MCP, je fais lire les sources, je pousse le schéma, je teste et je prépare la suite.</p></div>
+          <div><b>À faire</b><p>Utilise la checklist finale.</p></div>
+          <div><b>À éviter</b><p>Ne saute jamais la vérification du corpus.</p></div>
+          <div><b>Résultat</b><p>Tu sais où reprendre si ça bloque.</p></div>
+        </div>
+        
+      </div>
+    </section>
+    </main>
+<footer class="sources"><div class="wrap"><h2>Fichiers créés</h2><p>Le support utilise uniquement des captures locales issues de la séance et des captures fournies localement. Les fichiers de transcription sont disponibles dans le dossier <a href="transcription/seance-22-creer-un-rag-transcription.txt">transcription brute</a>, <a href="transcription/seance-22-creer-un-rag-transcription.md">transcription Markdown</a> et <a href="transcription/seance-22-creer-un-rag-segments.json">segments JSON</a>.</p></div></footer>
+<script>
+const progress = document.querySelector('#progress');
+const counter = document.querySelector('#counter');
+const sections = [...document.querySelectorAll('.support-section')];
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      entry.target.querySelectorAll('.reveal').forEach((node) => node.classList.add('visible'));
+      const idx = sections.indexOf(entry.target) + 1;
+      if (idx > 0 && counter) counter.textContent = String(idx).padStart(2,'0') + ' / 80';
+    }
+  });
+}, { threshold: 0.18 });
+sections.forEach((section) => observer.observe(section));
+window.addEventListener('scroll', () => {
+  const max = document.documentElement.scrollHeight - innerHeight;
+  const value = max > 0 ? scrollY / max : 0;
+  progress.style.width = `${Math.min(1, Math.max(0, value)) * 100}%`;
+}, { passive: true });
+document.querySelectorAll('.copy-btn').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const code = button.closest('.prompt-panel')?.querySelector('code')?.innerText || '';
+    await navigator.clipboard.writeText(code);
+    button.classList.add('copied');
+    button.textContent = 'Copié';
+    setTimeout(() => { button.classList.remove('copied'); button.textContent = 'Copier'; }, 1400);
+  });
+});
+</script>
+</body>
+</html>

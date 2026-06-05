@@ -1,0 +1,445 @@
+# Seance 22 - Creer un RAG avec Supabase - transcription brute
+
+- Video : `2026-06-05 15-27-56.mp4`
+- Duree detectee : 00:42:13
+- Langue : fr
+
+## Segments
+
+### 00:00:00 - 00:00:04
+bonjour à tous et à toutes j'espère que vous allez bien donc on se retrouve
+
+### 00:00:04 - 00:00:08
+aujourd'hui pour la séance sur la construction d'un RAG vous allez voir ça
+
+### 00:00:08 - 00:00:11
+va pas être bien complexe on va utiliser un outil qui s'appelle
+
+### 00:00:11 - 00:00:16
+SuperBase donc SuperBase va nous permettre de créer justement ce RAG donc
+
+### 00:00:16 - 00:00:20
+si un client a besoin d'un chatbot ou d'une solution avec un système de
+
+### 00:00:20 - 00:00:28
+mémoire on va utiliser directement cet outil là donc SuperBase qui va nous
+
+### 00:00:28 - 00:00:36
+permettre de créer des chunks des chunks c'est quoi c'est des petites parties de
+
+### 00:00:36 - 00:00:42
+mots que notre API par exemple OpenAI va récupérer pour ensuite rédiger la
+
+### 00:00:42 - 00:00:48
+réponse donc c'est un outil qui est assez complexe à utiliser si derrière on
+
+### 00:00:48 - 00:00:53
+fait pas en MCP donc c'est pour ça que on va connecter
+
+### 00:00:53 - 00:00:59
+superbase en mcp directement avec codex pour qu'il vous crée justement tous ces chunks là
+
+### 00:00:59 - 00:01:05
+pour qu'ensuite le chatbot puisse les récupérer et avoir un maximum de contexte par rapport à la
+
+### 00:01:05 - 00:01:14
+demande du client ou de l'utilisateur qui fait la demande donc on va aller sur superbase on va
+
+### 00:01:14 - 00:01:24
+se connecter moi j'ai déjà un compte si vous n'avez pas de compte vous cliquez justement ici et derrière vous
+
+### 00:01:24 - 00:01:40
+remplissez le formulaire donc moi je me connecte là je suis connecté donc là j'ai le free
+
+### 00:01:40 - 00:01:50
+plant j'ai mon organisation qui est déjà faite ensuite ce que je vais faire c'est que je vais
+
+### 00:01:50 - 00:01:56
+aller dans la partie de mon organisation je vais cliquer juste ici là comme on
+
+### 00:01:56 - 00:02:00
+peut voir je peux créer un projet pour créer un projet c'est compliqué on
+
+### 00:02:00 - 00:02:08
+crée new project ensuite on met le nom du projet je vais mettre rag client je
+
+### 00:02:08 - 00:02:15
+vais créer un password pour qu'il soit constamment accessible et ensuite je
+
+### 00:02:15 - 00:02:24
+fait création du projet en question une fois que le projet est créé ce que je
+
+### 00:02:24 - 00:02:35
+fais c'est que je connecte super base à konex pour ça simplement d'une part on
+
+### 00:02:35 - 00:02:43
+va observer que sur le petit onglet à gauche on a une partie table éditor sql
+
+### 00:02:43 - 00:02:48
+éditor c'est ce que konex va remplir on a une partie database
+
+### 00:02:48 - 00:02:54
+On pourra voir nos tables, on pourra voir justement le schéma d'organisation
+
+### 00:02:54 - 00:03:00
+dans la partie authentification on souhaite créer justement des users
+
+### 00:03:00 - 00:03:03
+on fait une application pour un client ou autre
+
+### 00:03:03 - 00:03:09
+et en gros cet outil là va nous permettre vraiment de créer une base de données et un RAID
+
+### 00:03:09 - 00:03:14
+donc on va le voir étape par étape et encore une fois à partir d'un prompt
+
+### 00:03:14 - 00:03:20
+je vais vous faire une manière très simple traditionnelle dans le sens où je
+
+### 00:03:20 - 00:03:24
+pense que vous avez probablement jamais utilisé cet outil du coup je vais essayer
+
+### 00:03:24 - 00:03:27
+d'y aller le plus simplement possible avec des petits prompt on va pas
+
+### 00:03:27 - 00:03:31
+récupérer tout un prompt on va vraiment le faire étape par étape donc
+
+### 00:03:31 - 00:03:38
+ce qu'on fait maintenant c'est qu'on va aller dans connect et comme on peut
+
+### 00:03:38 - 00:03:42
+voir juste ici j'ai la partie lcp connect your agent je vais cliquer
+
+### 00:03:42 - 00:03:49
+cliquer dessus je choisis mon modèle donc est ce que chatgpt il est top moi je vais
+
+### 00:03:49 - 00:03:59
+utiliser le modèle 5.5 vous allez très bien pouvoir chez les modèles 5.6 peu importe
+
+### 00:03:59 - 00:04:03
+et après on va cliquer sur add chatgpt mais l'objectif c'est pas de l'utiliser
+
+### 00:04:03 - 00:04:27
+comme ça je vais vous montrer comment faire on va créer une autre règle donc imaginons
+
+### 00:04:27 - 00:04:33
+que derrière vous avez un client qui vous dit voilà j'ai besoin d'un chatbot j'aimerais qu'il
+
+### 00:04:33 - 00:04:40
+ait des informations sur mon entreprise voilà des documents donc maintenant va falloir qu'ils
+
+### 00:04:40 - 00:04:46
+répondent grâce à ces documents là grâce à toutes les informations de mon entreprise
+
+### 00:04:46 - 00:04:53
+donc d'une part pour cette séance là j'ai préparé une partie de documentation business
+
+### 00:04:53 - 00:05:04
+clients on va bosser pour un restaurant et donc du coup j'ai créé tous ces
+
+### 00:05:04 - 00:05:11
+documents là qu'on va mettre justement en chunks dans notre partie projet
+
+### 00:05:11 - 00:05:16
+client super base les chunks en gros ça va nous servir de créer ça va nous
+
+### 00:05:16 - 00:05:23
+servir de RAG, et tous ces documents là qui sont extrêmement longs, par exemple je vais ouvrir
+
+### 00:05:23 - 00:05:34
+des informations sur l'entreprise en question, ça c'est toujours pareil quand vous travaillez sur
+
+### 00:05:34 - 00:05:42
+un RAG, le client va vous donner des documents que vous allez devoir mettre en chunks, une
+
+### 00:05:42 - 00:05:47
+fois que vous avez vos documents, ce qu'on va faire, ça va pas être complexe, on va ouvrir un
+
+### 00:05:47 - 00:06:05
+terminale au dossier, business, terminale au dossier, récupérer la commande codex dangerously
+
+### 00:06:05 - 00:06:12
+bypass approvals and sandbox, je copie la commande, je la colle et je lui donner une
+
+### 00:06:12 - 00:06:21
+première information, comprends tous les documents et ensuite met toi en tête que
+
+### 00:06:21 - 00:06:36
+nous allons créer un RAID très simple et ensuite il est en tête que nous ce qu'on veut c'est faire
+
+### 00:06:36 - 00:06:55
+un RAID ensuite on va le copier tout ça on va le donner directement à codex qui va avoir
+
+### 00:06:55 - 00:07:02
+l'intelligence de changer la partie code de code à codex on peut très bien mettre chat gpt
+
+### 00:07:02 - 00:07:29
+connecté à tout chat GPT connecté j'ai tout ça autorisé démarrer le chat après je peux faire
+
+### 00:07:29 - 00:07:39
+un screen il faut qu'il a terminé tac démarrer avec le chat là derrière on peut voir que j'ai
+
+### 00:07:39 - 00:07:44
+la petite partie codex enfin je suis pas base par contre mais je pourrais aller dans codex
+
+### 00:07:44 - 00:08:13
+On n'arrive pas à le retrouver donc pour ça on va utiliser les informations de notre
+
+### 00:08:13 - 00:08:50
+organisation SuperBase où on copiera. Il a couvert les 20 sources. Là il va faire une
+
+### 00:08:50 - 00:08:56
+synthèse avec le contexte métier et préparer l'angle RAG. On va le laisser travailler.
+
+### 00:08:56 - 00:10:04
+Il va bientôt terminer. Ok c'est top. C'était sûr. On démarre une nouvelle session.
+
+### 00:10:04 - 00:11:30
+on laisse travailler on va autoriser donc là c'est codex qui essaye de se
+
+### 00:11:30 - 00:11:36
+connecter donc on fait autoriser il aura accès du coup à l'autre organisation
+
+### 00:11:36 - 00:12:53
+on voit que ça a été complété donc là il me demande de réouvrir la session
+
+### 00:12:53 - 00:12:58
+fermer et réouvrir donc je le fais comme ça ça va relancer avec superbase
+
+### 00:12:58 - 00:13:03
+normalement sinon on ira voir la problématique
+
+### 00:13:03 - 00:14:13
+C'est copié, je relance la session, je donne le dossier, le but c'est de lui expliquer
+
+### 00:14:13 - 00:14:21
+notre demande, lui va s'occuper de synthétiser d'une part la demande et de faire tout l'aspect
+
+### 00:14:21 - 00:14:35
+techniques. Les techniques c'est la partie SQL éditor table éditor. On verra
+
+### 00:14:35 - 00:14:42
+justement comment il a réfléchi et comment il a créé tout ça. Donc là il fait des recherches sur
+
+### 00:14:42 - 00:14:56
+internet, il prend justement la partie data et graph QL. Là il va faire un call-in sur le MCP
+
+### 00:14:56 - 00:15:44
+qui l'a bien repéré de bon au niveau du projet donc rag client. En fait c'est ça qu'il faut vraiment
+
+### 00:15:44 - 00:15:50
+se mettre en tête c'est que derrière oui il y a des logiciels qui sont très complexes moi
+
+### 00:15:50 - 00:15:56
+personnellement j'ai appris à créer justement des rags de manière manuelle en créant des tables
+
+### 00:15:56 - 00:16:06
+directement grâce à l'outil faire le SQL aussi en coding direct l'authentification aussi mais
+
+### 00:16:06 - 00:16:17
+faite grâce au système MCP vous allez pouvoir avoir les mêmes compétences que moi en automatique
+
+### 00:16:17 - 00:16:24
+très rapidement moi j'ai pris 4-5 mois et c'est assez bon sur tout ce qui est des rags et je peux
+
+### 00:16:24 - 00:16:33
+vous assurer que dès que ce fait le taf exactement voire même mieux le but c'est juste de bien
+
+### 00:16:33 - 00:16:37
+s'organiser de bien comprendre ce que vous souhaitez faire donc là tout part d'une demande
+
+### 00:16:37 - 00:16:42
+voilà j'ai des documents le client veut faire un ride c'est bien de faire un ride parce que
+
+### 00:16:42 - 00:16:48
+pourquoi un chatbot a besoin de mémoire pour avoir de contexte et de donner des réponses
+
+### 00:16:48 - 00:16:53
+pertinentes donc il me faut un ride et le client va être satisfait parce que il y aura
+
+### 00:16:53 - 00:16:59
+de la mémoire et ensuite je regarde si cet outil là peut se connecter en mcpi ok
+
+### 00:16:59 - 00:17:02
+il peut se connecter en mcpi donc je vais le faire ici j'aurais pu très bien utiliser
+
+### 00:17:02 - 00:17:07
+un système de rag avec un autre outil si ça se connectait en mcp j'aurais eu
+
+### 00:17:07 - 00:17:13
+capacité de le faire comme par exemple blender blender qui est un petit 3d il peut se
+
+### 00:17:13 - 00:17:16
+connecter en mcp donc je sais l'utiliser pourquoi parce que codex à la
+
+### 00:17:16 - 00:17:28
+capacité de créer grâce 3d sur blender je l'ai essayé franchement il est top
+
+### 00:17:28 - 00:17:33
+vraiment ça qu'il faut se mettre en tête si derrière vous bloquez sur un
+
+### 00:17:33 - 00:17:36
+projet client vous dites putain je sais pas comment faire c'est compliqué
+
+### 00:17:36 - 00:17:41
+non d'abord on analyse la demande ok est ce que j'aurais besoin de cet outil là
+
+### 00:17:41 - 00:17:46
+est ce qu'il a besoin d'un rag oui ok bon je vais utiliser super base mais je
+
+### 00:17:46 - 00:17:49
+connais pas super base est ce que je peux le connecter en mcp oui je peux le
+
+### 00:17:49 - 00:17:53
+connecter donc je vais faire le rag en mcp c'est comme ça qu'il faut découper
+
+### 00:17:53 - 00:17:56
+son projet au fur et à mesure pour voir si on a les compétences et les
+
+### 00:17:56 - 00:18:00
+capacités de réaliser un projet à la fois faut pas se mettre en tête que
+
+### 00:18:00 - 00:18:05
+voilà j'ai le syndrome de l'imposteur je sais pas faire du coup je vais
+
+### 00:18:05 - 00:18:11
+bidouille à droite à gauche non le modèle codex ou clod code va être dans la capacité de vous offrir
+
+### 00:18:11 - 00:18:18
+cette compétence là par la suite le client soit satisfait lors de la livraison du projet et c'est
+
+### 00:18:18 - 00:18:23
+ça la puissance de ce domaine là de ce mille maintenant vous avez la capacité de toucher à
+
+### 00:18:23 - 00:18:27
+vous vous pouvez aller sur tous les secteurs et réaliser que ce soit des automatisations
+
+### 00:18:27 - 00:18:33
+il sera des agents IA, seulement avec des demandes toutes simples, donc là c'est
+
+### 00:18:33 - 00:18:36
+pour ça que je vous les coupe, je n'ai pas envie de vous montrer quelque chose de
+
+### 00:18:36 - 00:19:20
+complexe alors qu'on peut le réaliser simplement, donc là il a un point de
+
+### 00:19:20 - 00:20:36
+créer une ration avec le schéma SQL, le drag, le projet recliant, c'est
+
+### 00:20:36 - 00:21:48
+fini dès qu'il a terminé. Grâce à nos fichiers, vous allez montrer, il a créé
+
+### 00:21:48 - 00:21:57
+533 chunks donc l'IA, le chatbot IA qu'on va créer par la suite va devoir récupérer les chunks
+
+### 00:21:57 - 00:22:04
+selon la demande du client par exemple on aura 10 chunks sur la partie réservation donc le chatbot IA
+
+### 00:22:04 - 00:22:11
+va devoir récupérer ces 10 chunks, les analyser, les comprendre et ensuite faire une réponse
+
+### 00:22:11 - 00:22:17
+adaptée avec une analyse c'est l'objectif justement de notre hack. Par exemple là on peut voir
+
+### 00:22:17 - 00:22:28
+FAQ client, horaire, politique, réservation, menu, présentation, procédure, accueil, script,
+
+### 00:22:28 - 00:22:35
+réponse, allergène régime, règle, réservation, demande, client, donc là on a quand même beaucoup
+
+### 00:22:35 - 00:22:46
+de documents. Encore une fois là on le fait sur 20 documents mais si on en a 100 c'est le
+
+### 00:22:46 - 00:22:53
+même système à la place d'avoir 533 chunks on en aura peut-être 2 000, 3 000, ça m'est déjà
+
+### 00:22:53 - 00:23:00
+arrivé d'en avoir 5 ou 6 000 chunks, il y a un système qui tourne vraiment parfaitement, il n'y a
+
+### 00:23:00 - 00:23:06
+aucune problématique, il y a la correspondance sur la demande de client par rapport à la réponse
+
+### 00:23:06 - 00:25:33
+qui va être fournie ensuite par l'air, on laisse terminé ensuite on ira vérifier justement ce qui
+
+### 00:25:33 - 00:26:10
+qui nous a fait voir si ça correspond bien à la demande par contre on peut lui dire d'aller
+
+### 00:26:10 - 00:26:18
+pousser directement le SQL Editor et le Table Editor pour qu'on ait le travail fonctionnel
+
+### 00:26:18 - 00:28:01
+peut-être qu'il n'a pas terminé il va le faire sur nous il a ouvert l'OMC Pychrome
+
+### 00:28:01 - 00:29:24
+il va aller piloter l'application fixe sur la forme donc là on s'est connecté
+
+### 00:29:24 - 00:29:32
+on va le laisser travailler donc là c'est bon il a créé la partie Table Editor donc
+
+### 00:29:32 - 00:29:47
+je vais dessus voir un Shanks pour la partie customer dans la 43 donc là c'est
+
+### 00:29:47 - 00:29:59
+tout un détail c'est partie résumé entre le sommaire Shanks ID par exemple
+
+### 00:29:59 - 00:30:10
+on a une FAQ à l'intérieur quand l'agent IA va récupérer un Shanks il va
+
+### 00:30:10 - 00:30:13
+récupérer le content aussi à l'intérieur il va récupérer toute la
+
+### 00:30:13 - 00:30:21
+la ligne en question. Vous pouvez voir aussi sur la partie SQL éditor qui l'a bien run
+
+### 00:30:21 - 00:31:45
+donc c'est top pour aller dans ETAG. Donc là je lui ai donné les accès d'une part
+
+### 00:31:45 - 00:31:51
+au MCP. On l'a vu on s'est connecté directement ici dans connect et là il est connecté aussi
+
+### 00:31:51 - 00:31:55
+à Chrome. Donc ici derrière il n'a pas les outils, enfin tous les outils adéquats
+
+### 00:31:55 - 00:32:01
+pour réaliser par exemple schéma visualiseur. Ou bien il utilisera cette partie là pour
+
+### 00:32:01 - 00:32:14
+le but c'est de combiner plus le mcp qu'on va le laisser encore une fois travailler
+
+### 00:32:14 - 00:33:51
+optionnel, laisse travailler, là on a fait toutes nos demandes et ensuite notre
+
+### 00:33:51 - 00:34:53
+voir que ça prend pas trop de système d'api enfin de mcp la partie mcp de
+
+### 00:34:53 - 00:34:58
+l'outil, la connecter encore une fois juste ici et la partie chrome donc là il va le
+
+### 00:34:58 - 00:35:50
+faire en api, on va le suivre, là on a bien du coup notre schéma il va aller vérifier il va dire que
+
+### 00:35:50 - 00:35:57
+c'est bon parce que c'est le cas. Donc là, on voit toutes les relations entre les chunks
+
+### 00:35:57 - 00:36:44
+en partie documents. J'ai pété, je ne sais pas, je vais vous expliquer un petit peu plus
+
+### 00:36:44 - 00:37:04
+en détail à quoi correspondent toutes les colonnes, toutes les relations. Regardez
+
+### 00:37:04 - 00:37:48
+si le règle est bon. C'est bien. Et par exemple, on va terminer cette partie-là,
+
+### 00:37:48 - 00:38:51
+J'ai fait la partie rags, j'ai fait la partie rags, voilà à quoi ça va ressembler, même si il n'est pas technique au client, c'est important de lui dire justement à quoi ça ressemble, comme ça il y a du contexte, de l'information, c'est toujours un plus de la fin, d'un étable, on va travailler sur ce rags pour avoir un channel qualitatif qui correspond, encore une fois au début.
+
+### 00:38:51 - 00:41:49
+Je vous remercie d'avoir suivi cette séance, j'espère que ça vous a plu, on est vraiment
+
+### 00:41:49 - 00:42:08
+allé sur traditionnel, on travaille avec un medel comme codex, je vous remercie et on
+
+### 00:42:08 - 00:42:10
+A tout de suite, à la suite, à tout de suite.
