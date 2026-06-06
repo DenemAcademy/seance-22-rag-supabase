@@ -126,6 +126,488 @@ body {
 }
 </style>
 
+
+<!-- DENEM three-color act theme -->
+<style id="denem-three-color-act-theme">
+:root {
+  color-scheme: light;
+  --denem-white: #FFFFFF;
+  --denem-black: #000000;
+  --denem-act: #DC2626;
+  --denem-act-number: "7";
+  --ink: #000000;
+  --muted: #000000;
+  --line: #000000;
+  --paper: #FFFFFF;
+  --bg: #FFFFFF;
+  --soft: #FFFFFF;
+  --soft2: #FFFFFF;
+  --gray: #FFFFFF;
+  --cream: #FFFFFF;
+  --mint: #DC2626;
+  --amber: #DC2626;
+  --yellow: #DC2626;
+  --yellow-dark: #DC2626;
+  --yellow-soft: #DC2626;
+  --sky: #DC2626;
+  --lav: #DC2626;
+  --rose: #DC2626;
+  --blue: #DC2626;
+  --violet: #DC2626;
+  --cyan: #DC2626;
+  --green: #DC2626;
+  --orange: #DC2626;
+  --red: #DC2626;
+  --red-dark: #DC2626;
+  --red-soft: #DC2626;
+  --teal: #DC2626;
+  --teal-soft: #DC2626;
+  --brass: #DC2626;
+  --brass-soft: #DC2626;
+  --purple: #DC2626;
+  --pink: #DC2626;
+  --dark: #FFFFFF;
+  --shadow: 8px 8px 0 var(--denem-act);
+  --shadow-sm: 4px 4px 0 var(--denem-act);
+}
+
+html,
+body {
+  background: #FFFFFF !important;
+  color: #000000 !important;
+}
+
+*,
+*::before,
+*::after {
+  border-color: #000000 !important;
+  outline-color: var(--denem-act) !important;
+  text-decoration-color: #000000 !important;
+  text-shadow: none !important;
+}
+
+body,
+body * {
+  color: #000000 !important;
+}
+
+::selection {
+  background: var(--denem-act) !important;
+  color: #000000 !important;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 8px;
+  background: var(--denem-act);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+body,
+main,
+section,
+article,
+aside,
+header,
+footer,
+nav,
+figure,
+figcaption,
+table,
+thead,
+tbody,
+tfoot,
+tr,
+td,
+pre,
+code,
+blockquote,
+.hero,
+.hero-main,
+.topbar,
+.top,
+.footer,
+.sources,
+.lesson,
+.support-section,
+.section,
+.wrap,
+.copy,
+.text-card,
+.poster-copy,
+.section-head,
+.story-main,
+.check-copy,
+.compare-copy,
+.quote-detail,
+.prompt-copy,
+.prompt-wide-copy,
+.image-copy,
+.opener-copy,
+.opener-side,
+.final-card,
+.final-box,
+.command-box,
+.prompt-card,
+.prompt-panel,
+.code-panel,
+.media,
+.media-card,
+.visual,
+.visual-card,
+.shot,
+.table-wrap,
+.compare,
+.diagnostic,
+.matrix,
+.card,
+.card-grid article,
+.cards article,
+.summary-card,
+.act,
+.stat,
+.note,
+.tone-white,
+.tone-ice,
+.tone-soft,
+.tone-signal,
+.tone-dark,
+.tone-blue,
+.tone-1,
+.tone-2,
+.tone-3,
+.tone-4,
+.tone-5,
+.tone-6 {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  background-image: none !important;
+}
+
+[class*="bg-gradient"],
+[class*="from-"],
+[class*="via-"],
+[class*="to-"],
+[class*="bg-["] {
+  background-image: none !important;
+}
+
+[class*="bg-white"],
+[class*="bg-slate"],
+[class*="bg-neutral"],
+[class*="bg-gray"],
+[class*="bg-zinc"],
+[class*="bg-stone"],
+[class*="bg-black"] {
+  background: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+}
+
+[class*="bg-blue"],
+[class*="bg-violet"],
+[class*="bg-purple"],
+[class*="bg-indigo"],
+[class*="bg-cyan"],
+[class*="bg-sky"],
+[class*="bg-emerald"],
+[class*="bg-green"],
+[class*="bg-lime"],
+[class*="bg-yellow"],
+[class*="bg-amber"],
+[class*="bg-orange"],
+[class*="bg-red"],
+[class*="bg-rose"],
+[class*="bg-pink"],
+.progress,
+.progress span,
+#progress,
+.progress-bar,
+.eyebrow,
+.kicker,
+.pill,
+.badge.num,
+.num,
+.meta .num,
+.redfill,
+.hero-actions a:first-child,
+.hero-link.primary,
+.nav a:hover,
+.links a:hover,
+.nav a.active,
+.links a.active,
+.copy-btn,
+.copy,
+button,
+th,
+.data-table th,
+.compare th,
+.checklist span,
+.check-list span,
+.timeline span,
+.stepper span,
+.flow span:nth-child(2n),
+.mini-flow span:nth-child(2n),
+.big-index,
+.section-counter {
+  background: var(--denem-act) !important;
+  background-color: var(--denem-act) !important;
+  background-image: none !important;
+  color: #000000 !important;
+}
+
+[class*="text-white"],
+[class*="text-slate"],
+[class*="text-neutral"],
+[class*="text-gray"],
+[class*="text-zinc"],
+[class*="text-stone"],
+[class*="text-black"],
+[class*="text-blue"],
+[class*="text-violet"],
+[class*="text-purple"],
+[class*="text-indigo"],
+[class*="text-cyan"],
+[class*="text-sky"],
+[class*="text-emerald"],
+[class*="text-green"],
+[class*="text-lime"],
+[class*="text-yellow"],
+[class*="text-amber"],
+[class*="text-orange"],
+[class*="text-red"],
+[class*="text-rose"],
+[class*="text-pink"],
+h1 span,
+h2 span,
+h3 span,
+.accent,
+.gradient-text,
+.brand small,
+.prompt-head span,
+.card-grid b,
+.note b,
+.diagnostic b,
+.summary-card b,
+.act p:first-child {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+  background-image: none !important;
+}
+
+[class*="border-white"],
+[class*="border-slate"],
+[class*="border-neutral"],
+[class*="border-gray"],
+[class*="border-zinc"],
+[class*="border-stone"],
+[class*="border-black"],
+[class*="border-blue"],
+[class*="border-violet"],
+[class*="border-purple"],
+[class*="border-indigo"],
+[class*="border-cyan"],
+[class*="border-sky"],
+[class*="border-emerald"],
+[class*="border-green"],
+[class*="border-yellow"],
+[class*="border-amber"],
+[class*="border-orange"],
+[class*="border-red"],
+[class*="border-rose"],
+[class*="border-pink"] {
+  border-color: #000000 !important;
+}
+
+[class*="shadow"],
+.shadow-neo,
+.shadow-neo-sm,
+.card,
+.card-grid article,
+.cards article,
+.summary-card,
+.act,
+.badge,
+.eyebrow,
+.kicker,
+.pill,
+.media,
+.media-card,
+.visual,
+.visual-card,
+.shot,
+.table-wrap,
+.compare,
+.prompt-card,
+.prompt-panel,
+.code-panel,
+.command-box,
+.section-head,
+.story-main,
+.copy,
+.text-card,
+.poster-copy,
+.note,
+.final-box,
+.opener-copy,
+.opener-side,
+.stat {
+  box-shadow: 6px 6px 0 var(--denem-act) !important;
+}
+
+header,
+.hero,
+.hero-main {
+  border-top: 8px solid var(--denem-act) !important;
+  border-bottom: 3px solid #000000 !important;
+}
+
+h1 {
+  border-left: 12px solid var(--denem-act) !important;
+  padding-left: clamp(12px, 2vw, 22px) !important;
+}
+
+h2 {
+  border-left: 8px solid var(--denem-act) !important;
+  padding-left: 14px !important;
+}
+
+.topbar,
+.top,
+body > nav:first-of-type {
+  position: sticky !important;
+  top: 8px !important;
+  z-index: 1000 !important;
+  background: #FFFFFF !important;
+  border-top: 4px solid var(--denem-act) !important;
+  border-bottom: 2px solid #000000 !important;
+  backdrop-filter: none !important;
+}
+
+.nav,
+.links,
+.navlinks,
+.hero-actions,
+.hero-actions a,
+.hero-link,
+.summary,
+.summary-grid,
+.cards,
+.card-grid,
+.stats,
+.toc,
+.acts {
+  max-width: 100% !important;
+}
+
+.nav,
+.links,
+.navlinks {
+  overflow-x: auto !important;
+  scrollbar-width: thin;
+}
+
+.nav a,
+.links a,
+.navlinks a,
+.hero-actions a,
+.hero-link,
+.badge,
+.eyebrow,
+.kicker,
+.pill,
+.copy,
+.copy-btn,
+button {
+  border: 2px solid #000000 !important;
+  border-radius: 0 !important;
+  text-decoration: none !important;
+}
+
+.stats .stat:nth-child(1),
+.stats .stat:nth-child(2),
+.stats .stat:nth-child(3),
+.card-grid article:nth-child(2),
+.card-grid article:nth-child(3),
+.cards article:nth-child(2),
+.cards article:nth-child(3),
+.summary-card:nth-child(odd),
+.act:nth-child(odd),
+.act:nth-child(3n),
+.check-list li:nth-child(2n),
+.check-list li:nth-child(3n),
+.checklist li:nth-child(2n),
+.checklist li:nth-child(3n),
+.timeline li:nth-child(2n),
+.timeline article:nth-child(2n),
+.matrix div:nth-child(2),
+.matrix div:nth-child(3),
+.matrix div:nth-child(4),
+.before-after div:nth-child(1),
+.before-after div:nth-child(2) {
+  background: var(--denem-act) !important;
+  background-color: var(--denem-act) !important;
+}
+
+img,
+video {
+  filter: grayscale(1) contrast(12) !important;
+}
+
+svg,
+svg * {
+  fill: #000000 !important;
+  stroke: #000000 !important;
+}
+
+a,
+button,
+input,
+textarea,
+select {
+  color: #000000 !important;
+  caret-color: #000000 !important;
+}
+
+input,
+textarea,
+select {
+  background: #FFFFFF !important;
+  border: 2px solid #000000 !important;
+}
+
+hr {
+  border-color: var(--denem-act) !important;
+  background: var(--denem-act) !important;
+}
+
+.reveal,
+.reveal.visible,
+.reveal.is-visible {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.section-counter,
+#counter {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  h1 {
+    padding-left: 12px !important;
+  }
+
+  .nav a,
+  .links a,
+  .navlinks a {
+    white-space: nowrap !important;
+  }
+}
+</style>
+
 </head>
 <body>
 
@@ -133,7 +615,7 @@ body {
   <div class="denem-act-ribbon__inner">
     <span class="denem-act-ribbon__kicker">Acte 6 · Séances 20-24</span>
     <h2>Projet client, RAG, chatbot, solution finale</h2>
-    <p>Séance 22. Cette page appartient à l’acte 6 de la formation : fond blanc, couleur dominante Vert Supabase, progression lisible et fin standardisée par sources externes.</p>
+    
     <div class="denem-act-ribbon__chips">
       <span>Fond blanc</span>
       <span>Vert Supabase</span>
@@ -2175,6 +2657,26 @@ document.querySelectorAll('.copy-btn').forEach((button) => {
     </ul>
   </div>
 </section>
+
+
+<script id="denem-three-color-act-theme-script">
+(function () {
+  const header = document.querySelector('header');
+  if (header) {
+    const colorPattern = /(Cette page appartient|couleur dominante|Fond blanc|Vert Supabase|Bleu LinkedIn|#[0-9A-Fa-f]{6})/;
+    header.querySelectorAll('p, span, div, li').forEach((el) => {
+      const text = (el.textContent || '').replace(/\s+/g, ' ').trim();
+      if (text.length > 0 && text.length < 240 && colorPattern.test(text)) {
+        el.remove();
+      }
+    });
+  }
+
+  document.querySelectorAll('.reveal').forEach((el) => {
+    el.classList.add('visible', 'is-visible');
+  });
+})();
+</script>
 
 </body>
 </html>
