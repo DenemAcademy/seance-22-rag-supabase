@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>DENEM Academy · Séance 22 · Créer un RAG Supabase</title>
-<meta name="description" content="Support séance 22 : créer un RAG avec Supabase, Codex, MCP, sources restaurant, chunks, tables, tests de retrieval et méthode réutilisable.">
+<title>DENEM Academy · Séance 22 · Créer un RAG sur mesure</title>
+<meta name="description" content="Support DENEM Academy - Séance 22 : Créer un RAG sur mesure. Phase 5 - Delivery client.">
 <link rel="icon" href="logo-denem.jpeg">
 <style>
 :root{--ink:#111827;--muted:#475569;--line:#111827;--yellow:#facc15;--yellow-dark:#ca8a04;--yellow-soft:#fef3c7;--sky:#e0f2fe;--mint:#dcfce7;--rose:#ffe4e6;--lav:#ede9fe;--paper:#fff;--soft:#f8fafc;--shadow:7px 7px 0 #111827;--shadow-sm:4px 4px 0 #111827}
@@ -17,7 +17,7 @@
 
 <style id="denem-act-system">
 :root {
-  --denem-act-color: #059669;
+  --denem-act-color: #F87171;
   --denem-act-bg: #ffffff;
 }
 body {
@@ -31,70 +31,101 @@ body {
 .denem-act-ribbon,
 .denem-sources-final {
   background: #ffffff;
-  color: #0f172a;
-  border-top: 4px solid var(--denem-act-color);
-  border-bottom: 4px solid var(--denem-act-color);
+  color: #000000;
+  border-top: 6px solid var(--denem-act-color);
+  border-bottom: 4px solid #000000;
 }
 .denem-act-ribbon {
-  padding: 18px;
+  padding: clamp(18px, 3vw, 34px) 18px;
 }
 .denem-act-ribbon__inner,
 .denem-sources-final__inner {
   max-width: 1320px;
   margin: 0 auto;
 }
-.denem-act-ribbon__kicker,
-.denem-sources-final__kicker {
-  display: inline-flex;
+.denem-act-ribbon__topline,
+.denem-act-ribbon__meta,
+.denem-act-ribbon__chips,
+.denem-act-ribbon__phase-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
   align-items: center;
-  border: 2px solid var(--denem-act-color);
-  background: var(--denem-act-color);
-  color: #ffffff;
+}
+.denem-act-ribbon__topline {
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.denem-act-ribbon__kicker,
+.denem-sources-final__kicker,
+.denem-act-ribbon__session,
+.denem-act-ribbon__meta span,
+.denem-act-ribbon__phase-nav strong,
+.denem-act-ribbon__phase-nav a {
+  border: 2px solid #000000;
+  background: #ffffff;
+  color: #000000;
   padding: 8px 12px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 12px;
   font-weight: 900;
+  line-height: 1;
   text-transform: uppercase;
+  text-decoration: none;
+  box-shadow: 4px 4px 0 var(--denem-act-color);
+}
+.denem-act-ribbon__kicker,
+.denem-act-ribbon__phase-nav a.is-current,
+.denem-act-ribbon__phase-nav strong {
+  background: var(--denem-act-color);
+}
+.denem-act-ribbon__session {
+  background: #000000;
+  color: #ffffff;
+  box-shadow: 4px 4px 0 var(--denem-act-color);
 }
 .denem-act-ribbon h2,
 .denem-sources-final h2 {
-  margin: 14px 0 8px;
-  color: var(--denem-act-color);
-  font-size: 48px;
-  line-height: 1.03;
+  max-width: 1120px;
+  margin: 10px 0 10px;
+  color: #000000;
+  font-size: clamp(38px, 6vw, 86px);
+  line-height: .94;
   font-weight: 950;
   letter-spacing: 0;
+  border-left: 14px solid var(--denem-act-color);
+  padding-left: clamp(14px, 2vw, 24px);
 }
 .denem-act-ribbon p {
-  max-width: 920px;
+  max-width: 960px;
   margin: 0;
-  color: #334155;
-  font-size: 18px;
-  line-height: 1.7;
+  color: #000000;
+  font-size: clamp(16px, 2vw, 20px);
+  line-height: 1.65;
 }
 .denem-act-ribbon__chips,
-.denem-sources-final ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 16px 0 0;
+.denem-act-ribbon__phase-nav {
+  margin: 18px 0 0;
   padding: 0;
   list-style: none;
 }
-.denem-act-ribbon__chips span,
-.denem-sources-final a {
+.denem-act-ribbon__chips span {
   display: inline-flex;
   align-items: center;
-  border: 2px solid var(--denem-act-color);
+  border: 2px solid #000000;
   background: #ffffff;
-  color: #0f172a;
+  color: #000000;
   padding: 10px 12px;
   text-decoration: none;
   font-weight: 900;
+  box-shadow: 3px 3px 0 var(--denem-act-color);
 }
-.denem-sources-final a:hover {
+.denem-act-ribbon__phase-nav {
+  padding-top: 14px;
+  border-top: 2px solid #000000;
+}
+.denem-act-ribbon__phase-nav a:hover {
   background: var(--denem-act-color);
-  color: #ffffff;
 }
 .denem-sources-final {
   padding: 56px 18px;
@@ -106,23 +137,20 @@ body {
 .nav-chip.is-active,
 .summary-card b {
   background-color: var(--denem-act-color) !important;
-  border-color: var(--denem-act-color) !important;
-  color: #ffffff !important;
+  border-color: #000000 !important;
+  color: #000000 !important;
 }
-
 @media (max-width: 700px) {
-  .denem-act-ribbon h2,
-  .denem-sources-final h2 {
-    font-size: 32px;
+  .denem-act-ribbon__topline {
+    justify-content: flex-start;
   }
-  .denem-act-ribbon,
-  .denem-sources-final {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-  .denem-sources-final ul {
+  .denem-act-ribbon__phase-nav {
     display: grid;
     grid-template-columns: 1fr;
+  }
+  .denem-act-ribbon h2,
+  .denem-sources-final h2 {
+    font-size: 34px;
   }
 }
 </style>
@@ -132,8 +160,8 @@ body {
   color-scheme: light;
   --denem-white: #FFFFFF;
   --denem-black: #000000;
-  --denem-act: #DC2626;
-  --denem-act-number: "7";
+  --denem-act: #F87171;
+  --denem-act-number: "5";
   --ink: #000000;
   --muted: #000000;
   --line: #000000;
@@ -1127,37 +1155,224 @@ blockquote span:not(.num):not(.badge),
 }
 </style>
 
+<style id="denem-session-media-system">
+.denem-session-switcher {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) minmax(280px, 720px);
+  gap: 10px;
+  align-items: center;
+  margin: 18px auto 0;
+  padding: 14px 0;
+  border-top: 2px solid #000000;
+  border-bottom: 2px solid #000000;
+  max-width: 980px;
+}
+.denem-session-switcher label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 2px solid #000000;
+  background: var(--denem-act-color, var(--denem-act, #60A5FA));
+  color: #000000;
+  box-shadow: 4px 4px 0 var(--denem-act-color, var(--denem-act, #60A5FA));
+  padding: 10px 12px;
+  font: 950 12px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.denem-session-switcher select {
+  width: 100%;
+  min-height: 44px;
+  border: 2px solid #000000;
+  border-radius: 0;
+  background: #ffffff;
+  color: #000000;
+  box-shadow: 4px 4px 0 var(--denem-act-color, var(--denem-act, #60A5FA));
+  padding: 0 44px 0 14px;
+  font: 900 14px/1.1 ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  cursor: pointer;
+  appearance: auto;
+}
+.media-card,
+.shot,
+.visual,
+.hero-card,
+.poster,
+.image-card,
+.screen,
+.capture,
+figure[class*="media"],
+figure[class*="visual"],
+figure[class*="shot"] {
+  position: relative !important;
+  overflow: hidden !important;
+  background-color: #ffffff !important;
+  background-image:
+    linear-gradient(45deg, rgba(0,0,0,.035) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(0,0,0,.035) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(0,0,0,.035) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(0,0,0,.035) 75%) !important;
+  background-size: 18px 18px !important;
+  background-position: 0 0, 0 9px, 9px -9px, -9px 0 !important;
+}
+.media-card > img,
+.shot > img,
+.visual > img,
+.hero-card > img,
+figure[class*="media"] > img,
+figure[class*="visual"] > img,
+figure[class*="shot"] > img {
+  position: relative !important;
+  z-index: 1 !important;
+  background: #ffffff !important;
+}
+.media-card::after,
+.shot::after,
+.visual::after,
+.hero-card::after,
+figure[class*="media"]::after,
+figure[class*="visual"]::after,
+figure[class*="shot"]::after {
+  content: "Capture";
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  z-index: 2;
+  border: 2px solid #000000;
+  background: var(--denem-act-color, var(--denem-act, #60A5FA));
+  color: #000000;
+  padding: 6px 8px;
+  font: 950 10px/1 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  pointer-events: none;
+}
+.media-card:has(figcaption)::after,
+.shot:has(figcaption)::after,
+.visual:has(figcaption)::after,
+figure[class*="media"]:has(figcaption)::after,
+figure[class*="visual"]:has(figcaption)::after,
+figure[class*="shot"]:has(figcaption)::after {
+  content: none;
+}
+.media-card:empty,
+.shot:empty,
+.visual:empty,
+.hero-card:empty,
+figure[class*="media"]:empty,
+figure[class*="visual"]:empty,
+figure[class*="shot"]:empty {
+  min-height: 220px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+.media-card:empty::before,
+.shot:empty::before,
+.visual:empty::before,
+.hero-card:empty::before,
+figure[class*="media"]:empty::before,
+figure[class*="visual"]:empty::before,
+figure[class*="shot"]:empty::before,
+.is-media-missing::before {
+  content: "Bloc media a completer";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #000000;
+  background: var(--denem-act-color, var(--denem-act, #60A5FA));
+  color: #000000;
+  padding: 12px 14px;
+  font: 950 12px/1.15 ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.is-media-missing {
+  min-height: 220px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+.is-media-missing > img {
+  display: none !important;
+}
+@media (max-width: 700px) {
+  .denem-session-switcher {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
+  .denem-session-switcher select {
+    font-size: 13px;
+  }
+}
+</style>
 </head>
-<body>
+<body data-phase="5" data-session="22" data-old-session="22">
 
 <section class="denem-act-ribbon" aria-label="En-tête du support de cours">
   <div class="denem-act-ribbon__inner">
     <div class="denem-act-ribbon__topline">
-      <span class="denem-act-ribbon__kicker">Acte 6 · Séances 20-24</span>
-      <span class="denem-act-ribbon__session">Séance 22</span>
+      <span class="denem-act-ribbon__kicker">Phase 5 · Delivery client</span>
+      <span class="denem-act-ribbon__session">Séance 22 · ex-22</span>
     </div>
-    <h2>Créer un RAG Supabase</h2>
-    <p>Un repère simple pour savoir où tu es, quoi faire et comment retrouver les étapes importantes.</p>
+    <h2>Créer un RAG sur mesure</h2>
+    <p>On passe de la vente au delivery : audit client, organisation projet, RAG et chatbot IA.</p>
     <div class="denem-act-ribbon__chips" aria-label="Repères utiles du support">
-      <span>Parcours · Projet client, RAG, chatbot et solution finale</span>
-      <span>À faire · Suivre la séance puis refaire seul</span>
-      <span>Navigation · Boutons 01, 02, 03... pour retrouver une étape</span>
+      <span>Delivery</span>
+      <span>Séances 20 à 23</span>
+      <span>Parcours DENEM Academy</span>
+      <span>Support technique séances 1 à 24</span>
     </div>
+    <div class="denem-session-switcher" aria-label="Changer de séance">
+      <label for="denem-session-switch">Changer de séance</label>
+      <select id="denem-session-switch">
+        <option value="../DENEMACADEMY-SEANCE-1-CLAUDE-CODE/index.html">01 — Claude Code : agents IA &amp; automatisations · Phase 0</option>
+        <option value="../seance-02-codex/index.html">02 — Codex : agents IA &amp; automatisations · Phase 0</option>
+        <option value="../seance-03-n8n/index.html">03 — Découverte et prise en main de n8n · Phase 0</option>
+        <option value="../seance-04-cowork/index.html">04 — Maîtriser Claude Cowork · Phase 0</option>
+        <option value="../formation-seance-06-qg-cowork/index.html">05 — Créer son QG de travail Cowork · Phase 0</option>
+        <option value="../seance-05-etude-marche/index.html">06 — Étude de marché complète · Phase 1</option>
+        <option value="../seance-07-identite-marque/index.html">07 — Créer son identité de marque · Phase 1</option>
+        <option value="../seance-09-site-web-wordpress/index.html">08 — Créer et déployer son site WordPress · Phase 2</option>
+        <option value="../formation-seance-08-audit-seo-geo/index.html">09 — Audit &amp; stratégie SEO/GEO automatisé · Phase 2</option>
+        <option value="../denemacademy-seance-10-blog-automatique/index.html">10 — Créer son blog pour attirer des leads · Phase 2</option>
+        <option value="../seance-11-automatiser-publication-article/index.html">11 — Automatiser la publication d'articles · Phase 2</option>
+        <option value="../formation-seance-12-profil-linkedin/index.html">12 — Profil LinkedIn optimisé · Phase 3</option>
+        <option value="../seance-13-creer-son-lead-magnet/index.html">13 — Créer son lead magnet · Phase 3</option>
+        <option value="../seance-14-automatiser-posts-linkedin/index.html">14 — Automatiser ses posts LinkedIn · Phase 3</option>
+        <option value="../denemacademy-seance-15-leads-gratuits/index.html">15 — Obtenir des leads gratuits · Phase 4</option>
+        <option value="../seance-16-enrichir-leads-data-gouv/index.html">16 — Enrichir ses leads avec data.gouv · Phase 4</option>
+        <option value="../formation-seance-17-enrichir-leads-apify/index.html">17 — Enrichir ses leads avec Apify · Phase 4</option>
+        <option value="../seance-18-nettoyer-scorer-bdd/index.html">18 — Nettoyer / scorer sa BDD · Phase 4</option>
+        <option value="../seance-19-prospection-automatisee/index.html">19 — Stratégie de prospection automatisée · Phase 4</option>
+        <option value="../seance-20-audit-technique-client/index.html">20 — Premier RDV commercial &amp; audit client · Phase 5</option>
+        <option value="../seance-21-organisation-projet-client/index.html">21 — Organiser son projet client · Phase 5</option>
+        <option value="#top" selected>22 — Créer un RAG sur mesure · Phase 5</option>
+        <option value="../seance-23-chatbot-ia-vocal-texte/index.html">23 — Créer un chatbot IA vocal/texte pour ses clients · Phase 5</option>
+        <option value="../seance-24-evaluation-finale/index.html">24 — Évaluation finale · Phase 6</option>
+      </select>
+    </div>
+    <nav class="denem-act-ribbon__phase-nav" aria-label="Navigation dans la phase">
+      <strong>Dans cette phase</strong>
+      <a href="../seance-20-audit-technique-client/index.html">20 · RDV &amp; audit</a>
+      <a href="../seance-21-organisation-projet-client/index.html">21 · Projet client</a>
+      <a class="is-current" aria-current="page" href="#top">22 · RAG sur mesure</a>
+      <a href="../seance-23-chatbot-ia-vocal-texte/index.html">23 · Chatbot vocal/texte</a>
+    </nav>
   </div>
 </section>
 
 <div class="progress"><span id="progress"></span></div>
 <div class="section-counter" id="counter">01 / 80</div>
-<nav class="topbar"><div class="topbar-inner"><a class="brand" href="#top"><img src="logo-denem.jpeg" alt="DENEM Academy"><span><b>DENEM Academy</b><small>Séance 22 · RAG Supabase</small></span></a><div class="navlinks"><a href="#section-01">RAG</a><a href="#section-11">Supabase</a><a href="#section-21">MCP</a><a href="#section-31">Sources</a><a href="#section-51">Tables</a><a href="#section-71">Méthode</a></div></div></nav>
-<header class="hero"><div class="hero-wrap"><div><span class="eyebrow">Séance 22 · mémoire client</span><h1>Créer un RAG Supabase <span>sans se perdre dans la technique.</span></h1><p>Je pars d'une demande client très concrète : un restaurant veut un futur chatbot capable de répondre avec ses propres documents. Je crée le projet Supabase, je branche le MCP, je fais lire les sources à Codex, je construis les chunks, puis je vérifie que la mémoire est prête.</p><div class="hero-actions"><a class="hero-link primary" href="#section-01">Commencer</a><a class="hero-link" href="transcription/seance-22-creer-un-rag-transcription.md">Transcription</a><a class="hero-link" href="transcription/seance-22-creer-un-rag-moments-importants.md">Moments importants</a></div></div><aside class="hero-card"><img src="img/session-22/24-capture-codex-prompt-rag.png" alt="Prompt Codex pour créer un RAG"><div class="stats"><div class="stat"><b>80</b><span>sections</span></div><div class="stat"><b>533</b><span>chunks créés</span></div><div class="stat"><b>20</b><span>sources</span></div></div></aside></div></header>
-<section class="toc" aria-label="Sommaire"><a href="#section-01"><span>Acte 01 · sections 01-10</span><b>Pourquoi je crée un RAG</b><p>Je pars du besoin client : un chatbot doit répondre avec les vrais documents.</p></a>
-<a href="#section-11"><span>Acte 02 · sections 11-20</span><b>Créer la base du projet</b><p>Je prépare le projet RAG CLIENT et je repère les zones que Codex va remplir.</p></a>
-<a href="#section-21"><span>Acte 03 · sections 21-30</span><b>Brancher Supabase à Codex</b><p>Je donne à l&#x27;agent les bons outils, puis je vérifie qu&#x27;il voit le bon projet.</p></a>
-<a href="#section-31"><span>Acte 04 · sections 31-40</span><b>Transformer les documents client</b><p>Je prépare le dossier restaurant et je demande à Codex de comprendre les sources.</p></a>
-<a href="#section-41"><span>Acte 05 · sections 41-50</span><b>Construire les chunks</b><p>Je transforme les fichiers en inventaire, documents, chunks, métadonnées et preuves.</p></a>
-<a href="#section-51"><span>Acte 06 · sections 51-60</span><b>Pousser le schéma Supabase</b><p>Je fais créer les tables, les relations, les vues et les tests dans Supabase.</p></a>
-<a href="#section-61"><span>Acte 07 · sections 61-70</span><b>Tester la mémoire</b><p>Je vérifie que le futur chatbot récupère les bons morceaux avant de répondre.</p></a>
-<a href="#section-71"><span>Acte 08 · sections 71-80</span><b>Réutiliser sur un vrai client</b><p>Je garde une méthode simple pour reproduire ce système dans un autre secteur.</p></a></section>
+<nav class="topbar"><div class="topbar-inner"><a class="brand" href="#top"><img src="logo-denem.jpeg" alt="DENEM Academy"><span><b>DENEM Academy</b><small>Phase 5 · Delivery client</small></span></a><div class="navlinks"><a href="#section-01">RAG</a><a href="#section-11">Supabase</a><a href="#section-21">MCP</a><a href="#section-31">Sources</a><a href="#section-51">Tables</a><a href="#section-71">Méthode</a></div></div></nav>
+<header class="hero"><div class="hero-wrap"><div><span class="eyebrow">Séance 22 · RAG sur mesure</span><h1>Créer un RAG Supabase <span>sans se perdre dans la technique.</span></h1><p>Je pars d'une demande client très concrète : un restaurant veut un futur chatbot capable de répondre avec ses propres documents. Je crée le projet Supabase, je branche le MCP, je fais lire les sources à Codex, je construis les chunks, puis je vérifie que la mémoire est prête.</p><div class="hero-actions"><a class="hero-link primary" href="#section-01">Commencer</a><a class="hero-link" href="transcription/seance-22-creer-un-rag-transcription.md">Transcription</a><a class="hero-link" href="transcription/seance-22-creer-un-rag-moments-importants.md">Moments importants</a></div></div><aside class="hero-card"><img src="img/session-22/24-capture-codex-prompt-rag.png" alt="Prompt Codex pour créer un RAG"><div class="stats"><div class="stat"><b>80</b><span>sections</span></div><div class="stat"><b>533</b><span>chunks créés</span></div><div class="stat"><b>20</b><span>sources</span></div></div></aside></div></header>
+<section class="toc" aria-label="Sommaire"><a href="#section-01"><span>Partie 01 · sections 01-10</span><b>Pourquoi je crée un RAG</b><p>Je pars du besoin client : un chatbot doit répondre avec les vrais documents.</p></a>
+<a href="#section-11"><span>Partie 02 · sections 11-20</span><b>Créer la base du projet</b><p>Je prépare le projet RAG CLIENT et je repère les zones que Codex va remplir.</p></a>
+<a href="#section-21"><span>Partie 03 · sections 21-30</span><b>Brancher Supabase à Codex</b><p>Je donne à l&#x27;agent les bons outils, puis je vérifie qu&#x27;il voit le bon projet.</p></a>
+<a href="#section-31"><span>Partie 04 · sections 31-40</span><b>Transformer les documents client</b><p>Je prépare le dossier restaurant et je demande à Codex de comprendre les sources.</p></a>
+<a href="#section-41"><span>Partie 05 · sections 41-50</span><b>Construire les chunks</b><p>Je transforme les fichiers en inventaire, documents, chunks, métadonnées et preuves.</p></a>
+<a href="#section-51"><span>Partie 06 · sections 51-60</span><b>Pousser le schéma Supabase</b><p>Je fais créer les tables, les relations, les vues et les tests dans Supabase.</p></a>
+<a href="#section-61"><span>Partie 07 · sections 61-70</span><b>Tester la mémoire</b><p>Je vérifie que le futur chatbot récupère les bons morceaux avant de répondre.</p></a>
+<a href="#section-71"><span>Partie 08 · sections 71-80</span><b>Réutiliser sur un vrai client</b><p>Je garde une méthode simple pour reproduire ce système dans un autre secteur.</p></a></section>
 <main>
     <section id="section-01" class="support-section tone-2 layout-opener">
       <div class="wrap reveal">
@@ -1168,7 +1383,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">01</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:00</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1193,7 +1408,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">02</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:00</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1216,7 +1431,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">03</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:00</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1237,7 +1452,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">04</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:00</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1257,7 +1472,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">05</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:01</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1278,7 +1493,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">06</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:04</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1301,7 +1516,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">07</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:04</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1324,7 +1539,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">08</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:04</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1352,7 +1567,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">09</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:05</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1376,7 +1591,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">10</span>
       <span class="badge label">Comprendre</span>
-      <span class="badge">Acte 1</span>
+      <span class="badge">Partie 1</span>
       <span class="badge time">00:05</span>
       <span class="badge soft">Comprendre</span>
     </div>
@@ -1402,7 +1617,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">11</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:01</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1427,7 +1642,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">12</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:01</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1452,7 +1667,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">13</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:02</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1473,7 +1688,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">14</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:02</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1501,7 +1716,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">15</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:02</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1524,7 +1739,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">16</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:02</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1552,7 +1767,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">17</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:02</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1576,7 +1791,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">18</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:02</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1604,7 +1819,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">19</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:03</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1630,7 +1845,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">20</span>
       <span class="badge label">Supabase</span>
-      <span class="badge">Acte 2</span>
+      <span class="badge">Partie 2</span>
       <span class="badge time">00:03</span>
       <span class="badge soft">Supabase</span>
     </div>
@@ -1653,7 +1868,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">21</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:03</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1678,7 +1893,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">22</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:03</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1701,7 +1916,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">23</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:03</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1724,7 +1939,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">24</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:04</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1747,7 +1962,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">25</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:04</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1776,7 +1991,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">26</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:04</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1799,7 +2014,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">27</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:10</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1820,7 +2035,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">28</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:12</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1840,7 +2055,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">29</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:14</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1861,7 +2076,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">30</span>
       <span class="badge label">MCP</span>
-      <span class="badge">Acte 3</span>
+      <span class="badge">Partie 3</span>
       <span class="badge time">00:13</span>
       <span class="badge soft">MCP</span>
     </div>
@@ -1885,7 +2100,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">31</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:04</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -1910,7 +2125,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">32</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:04</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -1933,7 +2148,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">33</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:05</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -1957,7 +2172,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">34</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:05</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -1985,7 +2200,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">35</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:06</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -2008,7 +2223,7 @@ blockquote span:not(.num):not(.badge),
     <div class="meta">
       <span class="badge num">36</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:06</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -2056,7 +2271,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">37</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:08</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -2077,7 +2292,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">38</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:14</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -2100,7 +2315,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">39</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:14</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -2123,7 +2338,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">40</span>
       <span class="badge label">Sources</span>
-      <span class="badge">Acte 4</span>
+      <span class="badge">Partie 4</span>
       <span class="badge time">00:08</span>
       <span class="badge soft">Sources</span>
     </div>
@@ -2148,7 +2363,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">41</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:13</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2173,7 +2388,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">42</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:19</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2196,7 +2411,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">43</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:19</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2217,7 +2432,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">44</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:21</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2237,7 +2452,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">45</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:21</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2263,7 +2478,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">46</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:22</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2286,7 +2501,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">47</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:22</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2309,7 +2524,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">48</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:22</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2332,7 +2547,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">49</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:25</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2356,7 +2571,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">50</span>
       <span class="badge label">Corpus</span>
-      <span class="badge">Acte 5</span>
+      <span class="badge">Partie 5</span>
       <span class="badge time">00:26</span>
       <span class="badge soft">Corpus</span>
     </div>
@@ -2382,7 +2597,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">51</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:29</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2407,7 +2622,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">52</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:29</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2427,7 +2642,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">53</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:35</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2453,7 +2668,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">54</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:30</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2476,7 +2691,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">55</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:30</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2499,7 +2714,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">56</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:35</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2522,7 +2737,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">57</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:35</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2546,7 +2761,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">58</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:35</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2569,7 +2784,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">59</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:35</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2590,7 +2805,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">60</span>
       <span class="badge label">Tables</span>
-      <span class="badge">Acte 6</span>
+      <span class="badge">Partie 6</span>
       <span class="badge time">00:21</span>
       <span class="badge soft">Tables</span>
     </div>
@@ -2613,7 +2828,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">61</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:21</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2638,7 +2853,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">62</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:22</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2666,7 +2881,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">63</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:22</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2689,7 +2904,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">64</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:22</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2712,7 +2927,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">65</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:29</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2736,7 +2951,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">66</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:29</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2759,7 +2974,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">67</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:30</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2780,7 +2995,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">68</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:35</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2800,7 +3015,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">69</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:37</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2821,7 +3036,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">70</span>
       <span class="badge label">Retrieval</span>
-      <span class="badge">Acte 7</span>
+      <span class="badge">Partie 7</span>
       <span class="badge time">00:37</span>
       <span class="badge soft">Retrieval</span>
     </div>
@@ -2850,7 +3065,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">71</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:16</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -2875,7 +3090,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">72</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:16</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -2898,7 +3113,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">73</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:17</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -2922,7 +3137,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">74</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:18</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -2945,7 +3160,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">75</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:37</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -2968,7 +3183,7 @@ Ce que j&#x27;attends :
     <div class="meta">
       <span class="badge num">76</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:38</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -3020,7 +3235,7 @@ Rends-moi :
     <div class="meta">
       <span class="badge num">77</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:38</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -3071,7 +3286,7 @@ Construis-moi :
     <div class="meta">
       <span class="badge num">78</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:38</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -3094,7 +3309,7 @@ Construis-moi :
     <div class="meta">
       <span class="badge num">79</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:41</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -3117,7 +3332,7 @@ Construis-moi :
     <div class="meta">
       <span class="badge num">80</span>
       <span class="badge label">Méthode</span>
-      <span class="badge">Acte 8</span>
+      <span class="badge">Partie 8</span>
       <span class="badge time">00:42</span>
       <span class="badge soft">Méthode</span>
     </div>
@@ -3185,5 +3400,27 @@ document.querySelectorAll('.copy-btn').forEach((button) => {
 })();
 </script>
 
+<script id="denem-session-media-script">
+(() => {
+  const select = document.getElementById('denem-session-switch');
+  if (select) {
+    select.addEventListener('change', () => {
+      const value = select.value;
+      if (value && value !== '#top') window.location.href = value;
+    });
+  }
+  const markMissing = (img) => {
+    const frame = img.closest('figure, .media-card, .shot, .visual, .hero-card, .poster, .image-card, .screen, .capture');
+    if (!frame) return;
+    frame.classList.add('is-media-missing');
+    frame.setAttribute('aria-label', 'Bloc media a completer');
+  };
+  document.querySelectorAll('img').forEach((img) => {
+    if (!img.getAttribute('src')) markMissing(img);
+    if (img.complete && img.naturalWidth === 0) markMissing(img);
+    img.addEventListener('error', () => markMissing(img), { once: true });
+  });
+})();
+</script>
 </body>
 </html>
